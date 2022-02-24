@@ -3,6 +3,7 @@ cmake_minimum_required(VERSION 3.0)
 project(mpb)
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+set(BUILD_SHARED_LIBS ON)
 
 set(CMAKE_CXX_STANDARD 17)
 
@@ -85,6 +86,14 @@ else (Qt5_FOUND)
     set(EXTRA_SRC ${EXTRA_SRC})
 endif (Qt5_FOUND)
 
+find_package(catkin REQUIRED COMPONENTS
+  ompl_mod_objectives
+)
+
+include_directories(${catkin_INCLUDE_DIRS})
+
+set(EXTRA_LIB ${catkin_LIBRARIES} ${EXTRA_LIB})
+
 add_library(mpb_core ${Base} ${Utils} ${Metrics} ${EXTRA_SRC})
 target_link_libraries(mpb_core ${EXTRA_LIB})
 
@@ -140,3 +149,6 @@ target_link_libraries(generate_obstacle_ratio_benchmarks ${EXTRA_LIB})
 
 add_executable(generate_turning_radii_benchmarks experiments/generate_turning_radii_benchmarks.cpp)
 target_link_libraries(generate_turning_radii_benchmarks ${EXTRA_LIB})
+
+
+

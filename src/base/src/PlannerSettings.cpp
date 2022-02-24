@@ -10,6 +10,9 @@
 #include <ompl/base/spaces/SO2StateSpace.h>
 #include <ompl/control/ODESolver.h>
 #include <ompl/control/spaces/RealVectorControlSpace.h>
+#include <ompl/mod/objectives/DTCOptimizationObjective.h>
+#include <ompl/mod/objectives/IntensityMapOptimizationObjective.h>
+#include <ompl/mod/objectives/UpstreamCriterionOptimizationObjective.h>
 #include <utils/OptimizationObjective.h>
 
 #include <steering_functions/include/ompl_state_spaces/CurvatureStateSpace.hpp>
@@ -261,6 +264,32 @@ void PlannerSettings::GlobalSettings::SteerSettings::initializeSteering()
     global::settings.ompl.objective =
         std::make_shared<CurvatureOptimizationObjective>(
             global::settings.ompl.space_info);
+  } else if (opt_obj_str == std::string("cliff")) {
+    global::settings.ompl.objective =
+        std::make_shared<ompl::mod::UpstreamCriterionOptimizationObjective>(
+            global::settings.ompl.space_info, ompl::mod::MapType::CLiFFMap,
+            global::settings.mod.mod_file_name.value(), 1.0, 1.0,
+            global::settings.mod.weight_cliff.value());
+  } else if (opt_obj_str == "gmmt") {
+    std::make_shared<ompl::mod::UpstreamCriterionOptimizationObjective>(
+        global::settings.ompl.space_info, ompl::mod::MapType::GMMTMap,
+        global::settings.mod.mod_file_name.value(), 1.0, 1.0,
+        global::settings.mod.weight_gmmt.value());
+  } else if (opt_obj_str == "intensity") {
+    std::make_shared<ompl::mod::IntensityMapOptimizationObjective>(
+        global::settings.ompl.space_info,
+        global::settings.mod.mod_file_name.value(), 1.0, 1.0,
+        global::settings.mod.weight_intensity.value());
+  } else if (opt_obj_str == "dtc") {
+    std::make_shared<ompl::mod::DTCOptimizationObjective>(
+        global::settings.ompl.space_info,
+        global::settings.mod.mod_file_name.value(), 1.0, 1.0,
+        global::settings.mod.weight_dtc.value(), global::settings.mod.max_vs,
+        global::settings.mod.mahalanobis_distance_threshold, true);
+  } else {
+    global::settings.ompl.objective =
+        std::make_shared<CustomPathLengthOptimizationObjective>(
+            global::settings.ompl.space_info);
   }
 
 #ifdef DEBUG
@@ -329,7 +358,8 @@ PlannerSettings::GlobalSettings::OmplSettings::OmplSettings(const char *name,
   retrieveControlPlannerParams();
 }
 
-void PlannerSettings::GlobalSettings::OmplSettings::retrieveGeometricPlannerParams() {
+void PlannerSettings::GlobalSettings::OmplSettings::
+    retrieveGeometricPlannerParams() {
   // Create dummy state space to create dummy planners for param retrieval
   auto space_ptr = std::make_shared<ob::SE2StateSpace>();
   auto space_info_ptr = std::make_shared<ob::SpaceInformation>(space_ptr);
@@ -368,7 +398,8 @@ void PlannerSettings::GlobalSettings::OmplSettings::retrieveGeometricPlannerPara
   ompl::msg::setLogLevel(ompl::msg::LOG_INFO);
 }
 
-void PlannerSettings::GlobalSettings::OmplSettings::retrieveControlPlannerParams() {
+void PlannerSettings::GlobalSettings::OmplSettings::
+    retrieveControlPlannerParams() {
   auto space_ptr = std::make_shared<ob::SE2StateSpace>();
   auto control_space_ptr_ =
       std::make_shared<oc::RealVectorControlSpace>(space_ptr, 2);

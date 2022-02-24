@@ -476,6 +476,19 @@ struct GlobalSettings : public Group {
     void initializeSampler() const;
   } ompl{"ompl", this};
 
+  struct MoDSettings : public Group {
+    using Group::Group;
+    Property<double> weight_cliff{0.2, "weight_cliff", this};
+    Property<double> weight_gmmt{0.2, "weight_gmmt", this};
+    Property<double> weight_intensity{0.2, "weight_intensity", this};
+    Property<double> weight_dtc{0.2, "weight_dtc", this};
+
+    Property<double> mahalanobis_distance_threshold{10.0, "mdt", this};
+    Property<double> max_vs{1.0, "max_vs", this};
+
+    Property<std::string> mod_file_name{"", "mod_file_name", this};
+  } mod{"ompl", this};
+
   struct SteerSettings : public Group {
     using Group::Group;
 
