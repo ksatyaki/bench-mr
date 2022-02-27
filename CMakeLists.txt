@@ -3,7 +3,6 @@ cmake_minimum_required(VERSION 3.0)
 project(mpb)
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
-set(BUILD_SHARED_LIBS ON)
 
 set(CMAKE_CXX_STANDARD 17)
 
@@ -92,6 +91,7 @@ find_package(catkin REQUIRED COMPONENTS
 
 include_directories(${catkin_INCLUDE_DIRS})
 
+set(BUILD_SHARED_LIBS OFF)
 set(EXTRA_LIB ${catkin_LIBRARIES} ${EXTRA_LIB})
 
 add_library(mpb_core ${Base} ${Utils} ${Metrics} ${EXTRA_SRC})
