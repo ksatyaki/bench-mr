@@ -487,7 +487,7 @@ struct GlobalSettings : public Group {
     Property<double> max_vs{1.0, "max_vs", this};
 
     Property<std::string> mod_file_name{"", "mod_file_name", this};
-  } mod{"ompl", this};
+  } mod{"mod", this};
 
   struct SteerSettings : public Group {
     using Group::Group;
