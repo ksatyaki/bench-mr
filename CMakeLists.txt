@@ -34,8 +34,9 @@ set(EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/bin)
 find_package(Eigen3 REQUIRED NO_MODULE)
 include_directories(${EIGEN3_INCLUDE_DIR})
 
-find_package(PkgConfig REQUIRED)
-pkg_check_modules(SBPL REQUIRED sbpl)
+# find_package(PkgConfig REQUIRED)
+# pkg_check_modules(SBPL REQUIRED sbpl)
+find_package(sbpl REQUIRED)
 include_directories(${SBPL_INCLUDE_DIRS})
 link_directories(${SBPL_LIBRARY_DIRS})
 
@@ -85,10 +86,11 @@ else (Qt5_FOUND)
     set(EXTRA_SRC ${EXTRA_SRC})
 endif (Qt5_FOUND)
 
-find_package(mod)
-include_directories(${MOD_INCLUDE_DIRS})
+find_package(mod REQUIRED)
+include_directories(${mod_INCLUDE_DIRS})
+set(EXTRA_LIB ${mod_LIBRARIES} ${EXTRA_LIB})
 
-set(EXTRA_LIB ${MOD_LIBRARIES} ${EXTRA_LIB})
+MESSAGE("MoD Libraries are: ${mod_LIBRARIES}")
 
 add_library(mpb_core ${Base} ${Utils} ${Metrics} ${EXTRA_SRC})
 target_link_libraries(mpb_core ${EXTRA_LIB})

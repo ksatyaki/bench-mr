@@ -266,22 +266,22 @@ void PlannerSettings::GlobalSettings::SteerSettings::initializeSteering()
             global::settings.ompl.space_info);
   } else if (opt_obj_str == std::string("cliff")) {
     global::settings.ompl.objective =
-        std::make_shared<ompl::mod::UpstreamCriterionOptimizationObjective>(
-            global::settings.ompl.space_info, ompl::mod::MapType::CLiFFMap,
+        std::make_shared<ompl::MoD::UpstreamCriterionOptimizationObjective>(
+            global::settings.ompl.space_info, ompl::MoD::MapType::CLiFFMap,
             global::settings.mod.mod_file_name.value(), 1.0, 1.0,
             global::settings.mod.weight_cliff.value());
   } else if (opt_obj_str == "gmmt") {
-    std::make_shared<ompl::mod::UpstreamCriterionOptimizationObjective>(
-        global::settings.ompl.space_info, ompl::mod::MapType::GMMTMap,
+    std::make_shared<ompl::MoD::UpstreamCriterionOptimizationObjective>(
+        global::settings.ompl.space_info, ompl::MoD::MapType::GMMTMap,
         global::settings.mod.mod_file_name.value(), 1.0, 1.0,
         global::settings.mod.weight_gmmt.value());
   } else if (opt_obj_str == "intensity") {
-    std::make_shared<ompl::mod::IntensityMapOptimizationObjective>(
+    std::make_shared<ompl::MoD::IntensityMapOptimizationObjective>(
         global::settings.ompl.space_info,
         global::settings.mod.mod_file_name.value(), 1.0, 1.0,
         global::settings.mod.weight_intensity.value());
   } else if (opt_obj_str == "dtc") {
-    std::make_shared<ompl::mod::DTCOptimizationObjective>(
+    std::make_shared<ompl::MoD::DTCOptimizationObjective>(
         global::settings.ompl.space_info,
         global::settings.mod.mod_file_name.value(), 1.0, 1.0,
         global::settings.mod.weight_dtc.value(), global::settings.mod.max_vs,
