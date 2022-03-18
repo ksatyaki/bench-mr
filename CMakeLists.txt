@@ -85,14 +85,10 @@ else (Qt5_FOUND)
     set(EXTRA_SRC ${EXTRA_SRC})
 endif (Qt5_FOUND)
 
-find_package(catkin REQUIRED COMPONENTS
-  ompl_mod_objectives
-)
+find_package(mod)
+include_directories(${MOD_INCLUDE_DIRS})
 
-include_directories(${catkin_INCLUDE_DIRS})
-
-set(BUILD_SHARED_LIBS OFF)
-set(EXTRA_LIB ${catkin_LIBRARIES} ${EXTRA_LIB})
+set(EXTRA_LIB ${MOD_LIBRARIES} ${EXTRA_LIB})
 
 add_library(mpb_core ${Base} ${Utils} ${Metrics} ${EXTRA_SRC})
 target_link_libraries(mpb_core ${EXTRA_LIB})
