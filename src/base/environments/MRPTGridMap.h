@@ -5,7 +5,7 @@
 #pragma once
 
 #include <base/Environment.h>
-#include <yaml.h>
+#include <yaml-cpp/yaml.h>
 
 class MRPTGridMap : Environment {
   MRPTGridMap() = default;

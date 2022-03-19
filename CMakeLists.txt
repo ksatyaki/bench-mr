@@ -40,6 +40,11 @@ find_package(sbpl REQUIRED)
 include_directories(${SBPL_INCLUDE_DIRS})
 link_directories(${SBPL_LIBRARY_DIRS})
 
+find_package(yaml-cpp)
+include_directories(${YAML_CPP_INCLUDE_DIR})
+MESSAGE("Found yaml at: ${YAML_CPP_INCLUDE_DIR}")
+set(EXTRA_LIB ${YAML_CPP_LIBRARIES} ${EXTRA_LIB})
+
 find_package(Qt5 COMPONENTS Core Widgets Charts Svg)
 include_directories(${CMAKE_BINARY_DIR})
 set(CMAKE_AUTOMOC ON)
