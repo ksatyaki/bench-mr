@@ -68,3 +68,5 @@ compile_commands.json
 
 # Doxygen folder
 doxygen/
+
+**.idea/
