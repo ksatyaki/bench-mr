@@ -8,6 +8,7 @@
 #include <yaml-cpp/yaml.h>
 
 class MRPTGridMap : Environment {
+ public:
   MRPTGridMap() = default;
   MRPTGridMap(const std::string& yaml_file_name);
 };
