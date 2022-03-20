@@ -18,6 +18,7 @@
 #include <steering_functions/include/ompl_state_spaces/CurvatureStateSpace.hpp>
 
 #include "base/environments/GridMaze.h"
+#include "base/environments/MRPTGridMap.h"
 #include "base/environments/PolygonMaze.h"
 #include "planners/OMPLControlPlanner.hpp"
 #include "planners/OMPLPlanner.hpp"
@@ -271,21 +272,25 @@ void PlannerSettings::GlobalSettings::SteerSettings::initializeSteering()
             global::settings.mod.mod_file_name.value(), 1.0, 1.0,
             global::settings.mod.weight_cliff.value());
   } else if (opt_obj_str == "gmmt") {
-    std::make_shared<ompl::MoD::UpstreamCriterionOptimizationObjective>(
-        global::settings.ompl.space_info, ompl::MoD::MapType::GMMTMap,
-        global::settings.mod.mod_file_name.value(), 1.0, 1.0,
-        global::settings.mod.weight_gmmt.value());
+    global::settings.ompl.objective =
+        std::make_shared<ompl::MoD::UpstreamCriterionOptimizationObjective>(
+            global::settings.ompl.space_info, ompl::MoD::MapType::GMMTMap,
+            global::settings.mod.mod_file_name.value(), 1.0, 1.0,
+            global::settings.mod.weight_gmmt.value());
   } else if (opt_obj_str == "intensity") {
-    std::make_shared<ompl::MoD::IntensityMapOptimizationObjective>(
-        global::settings.ompl.space_info,
-        global::settings.mod.mod_file_name.value(), 1.0, 1.0,
-        global::settings.mod.weight_intensity.value());
+    global::settings.ompl.objective =
+        std::make_shared<ompl::MoD::IntensityMapOptimizationObjective>(
+            global::settings.ompl.space_info,
+            global::settings.mod.mod_file_name.value(), 1.0, 1.0,
+            global::settings.mod.weight_intensity.value());
   } else if (opt_obj_str == "dtc") {
-    std::make_shared<ompl::MoD::DTCOptimizationObjective>(
-        global::settings.ompl.space_info,
-        global::settings.mod.mod_file_name.value(), 1.0, 1.0,
-        global::settings.mod.weight_dtc.value(), global::settings.mod.max_vs,
-        global::settings.mod.mahalanobis_distance_threshold, true);
+    global::settings.ompl.objective =
+        std::make_shared<ompl::MoD::DTCOptimizationObjective>(
+            global::settings.ompl.space_info,
+            global::settings.mod.mod_file_name.value(), 1.0, 1.0,
+            global::settings.mod.weight_dtc.value(),
+            global::settings.mod.max_vs,
+            global::settings.mod.mahalanobis_distance_threshold, true);
   } else {
     global::settings.ompl.objective =
         std::make_shared<CustomPathLengthOptimizationObjective>(
@@ -321,6 +326,12 @@ void PlannerSettings::GlobalSettings::EnvironmentSettings::createEnvironment() {
       }
       global::settings.env.grid.width = global::settings.environment->width();
       global::settings.env.grid.height = global::settings.environment->height();
+    } else if (grid.generator.value() == "yaml") {
+      global::settings.environment =
+          std::make_shared<MRPTGridMap>(grid.image.source);
+      global::settings.env.grid.width = global::settings.environment->width();
+      global::settings.env.grid.height = global::settings.environment->height();
+
     } else {
       OMPL_ERROR("Unknown grid environment generator \"%s\".",
                  grid.generator.value().c_str());

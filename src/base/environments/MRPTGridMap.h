@@ -9,13 +9,14 @@
 #include <mrpt/maps/COccupancyGridMap2D.h>
 #include <memory>
 
-class MRPTGridMap : Environment {
+class MRPTGridMap : public Environment {
   std::shared_ptr<mrpt::maps::COccupancyGridMap2D> mrpt_map_;
 
   float _thresdhold{0.0};
  public:
   MRPTGridMap() = default;
-  MRPTGridMap(const std::string& yaml_file_name);
+  explicit MRPTGridMap(const std::string& yaml_file_name);
+  ~MRPTGridMap() override = default;
 
   virtual bool collides(double x, double y) override;
   virtual bool collides(const Polygon &polygon) override;
