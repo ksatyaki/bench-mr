@@ -56,6 +56,10 @@ find_package(Boost 1.58 REQUIRED COMPONENTS serialization filesystem system prog
 include_directories(${Boost_INCLUDE_DIR})
 link_directories(${Boost_LIBRARY_DIRS})
 
+find_package(MRPT 2.0 REQUIRED COMPONENTS maps)
+include_directories(${MRPT_INCLUDE_DIRS})
+set(EXTRA_LIB ${MRPT_LIBRARIES} ${EXTRA_LIB})
+
 set(EXTRA_LIB ${EXTRA_LIB} ${SBPL_LIBRARIES} ${Boost_LIBRARIES} ${OMPL_LIBRARIES} chomp mzcommon steering_functions)
 
 if (Qt5_FOUND)
@@ -153,7 +157,7 @@ target_link_libraries(generate_obstacle_ratio_benchmarks ${EXTRA_LIB})
 add_executable(generate_turning_radii_benchmarks experiments/generate_turning_radii_benchmarks.cpp)
 target_link_libraries(generate_turning_radii_benchmarks ${EXTRA_LIB})
 
-add_executable(test_mrpt src/test_mrpt.cpp)
-target_link_libraries(test_mrpt ${EXTRA_LIB})
+#add_executable(test_mrpt src/test_mrpt.cpp)
+#target_link_libraries(test_mrpt ${EXTRA_LIB})
 
 
