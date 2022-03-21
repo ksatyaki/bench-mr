@@ -90,7 +90,13 @@ def plot_env(env, run_id: int = -1, colors=('b', 'r'),
         plt.grid()
 
         title += env["name"]
-    plt.axis('equal')
+
+    elif env["type"] == "yaml":
+        import occmap as oc
+        occmap = oc.OccMap()
+        occmap.load(env["file"])
+        occmap.plot()
+    #plt.axis('equal')
 
     if draw_start_goal:
         start = env["start"]

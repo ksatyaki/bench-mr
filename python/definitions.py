@@ -62,7 +62,8 @@ steer_function_names = {
     'linear': 'Linear',
     'cc_dubins': 'CC Dubins',
     'hc_reeds_shepp': 'HC Reeds-Shepp',
-    'cc_reeds_shepp': 'CC Reeds-Shepp'
+    'cc_reeds_shepp': 'CC Reeds-Shepp',
+    'car': 'Car'
 }
 
 steer_functions = [
@@ -73,7 +74,8 @@ steer_functions = [
     'linear',
     'cc_dubins',
     'hc_reeds_shepp',
-    'cc_reeds_shepp'
+    'cc_reeds_shepp',
+    'car'
 ]
 
 robot_models = [

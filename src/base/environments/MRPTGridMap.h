@@ -12,7 +12,8 @@
 class MRPTGridMap : public Environment {
   std::shared_ptr<mrpt::maps::COccupancyGridMap2D> mrpt_map_;
 
-  float _thresdhold{0.0};
+  float _threshold{0.0};
+  std::string _file;
  public:
   MRPTGridMap() = default;
   explicit MRPTGridMap(const std::string& yaml_file_name);
@@ -24,9 +25,13 @@ class MRPTGridMap : public Environment {
   virtual std::string name() const override { return "MRPT Grid-map"; }
 
   virtual void to_json(nlohmann::json &j) override {
-    j["type"] = "mrpt";
-    j["width"] = width();
-    j["height"] = height();
+    j["type"] = "yaml";
+    j["file"] = _file;
+    j["threshold"] = _threshold;
+    j["min_x"] = mrpt_map_->getXMin();
+    j["max_x"] = mrpt_map_->getXMax();
+    j["min_y"] = mrpt_map_->getYMin();
+    j["max_y"] = mrpt_map_->getYMax();
     j["start"] = start();
     j["goal"] = goal();
     j["name"] = name();

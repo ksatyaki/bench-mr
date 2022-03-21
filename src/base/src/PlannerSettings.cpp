@@ -17,12 +17,14 @@
 
 #include <steering_functions/include/ompl_state_spaces/CurvatureStateSpace.hpp>
 
+#include "base/CarStateSpace.h"
 #include "base/environments/GridMaze.h"
 #include "base/environments/MRPTGridMap.h"
 #include "base/environments/PolygonMaze.h"
 #include "planners/OMPLControlPlanner.hpp"
 #include "planners/OMPLPlanner.hpp"
 #include "steer_functions/POSQ/POSQStateSpace.h"
+#include "utils/YamlPolygonLoader.hpp"
 
 #ifdef G1_AVAILABLE
 #include "steer_functions/G1Clothoid/ClothoidSteering.hpp"
@@ -218,6 +220,9 @@ void PlannerSettings::GlobalSettings::SteerSettings::initializeSteering()
     global::settings.ompl.state_space = ob::StateSpacePtr(
         new InstrumentedStateSpace<hc_cc_spaces::HCReedsSheppStateSpace>(
             hc_cc.kappa, hc_cc.sigma, sampling_resolution));
+  else if (steering_type == Steering::STEER_TYPE_CAR)
+    global::settings.ompl.state_space = ob::StateSpacePtr(
+        new InstrumentedStateSpace<ob::CarStateSpace>(car_turning_radius));
 #ifdef G1_AVAILABLE
   else if (steering_type == Steering::STEER_TYPE_CLOTHOID)
     global::settings.ompl.state_space =
@@ -326,17 +331,17 @@ void PlannerSettings::GlobalSettings::EnvironmentSettings::createEnvironment() {
       }
       global::settings.env.grid.width = global::settings.environment->width();
       global::settings.env.grid.height = global::settings.environment->height();
-    } else if (grid.generator.value() == "yaml") {
-      global::settings.environment =
-          std::make_shared<MRPTGridMap>(grid.image.source);
-      global::settings.env.grid.width = global::settings.environment->width();
-      global::settings.env.grid.height = global::settings.environment->height();
-
     } else {
       OMPL_ERROR("Unknown grid environment generator \"%s\".",
                  grid.generator.value().c_str());
       exit(1);
     }
+  } else if (type.value() == "yaml") {
+    global::settings.environment =
+        std::make_shared<MRPTGridMap>(grid.image.source);
+    global::settings.env.grid.width = global::settings.environment->width();
+    global::settings.env.grid.height = global::settings.environment->height();
+
   } else if (type.value() == "polygon") {
     global::settings.environment = PolygonMaze::loadFromSvg(polygon.source);
   } else {
@@ -350,15 +355,25 @@ void PlannerSettings::GlobalSettings::EnvironmentSettings::CollisionSettings::
     initializeCollisionModel() {
   // Load polygon for polygon-based collision checker if necessary
   if (collision_model == robot::ROBOT_POLYGON) {
-    robot_shape = SvgPolygonLoader::load(robot_shape_source)[0];
-    robot_shape.value().center();
-    robot_shape.value().scale(global::settings.env.polygon.scaling);
-    OMPL_INFORM("Loaded polygon robot model from %s with %d vertices.",
-                robot_shape_source.value().c_str(),
-                robot_shape.value().points.size());
-    OMPL_INFORM("\tBounds: [%.2f %.2f] -- [%.2f %.2f]",
-                robot_shape.value().min().x, robot_shape.value().min().y,
-                robot_shape.value().max().x, robot_shape.value().max().y);
+    if (robot_shape_source.value().find("svg") != std::string::npos) {
+      robot_shape = SvgPolygonLoader::load(robot_shape_source)[0];
+      robot_shape.value().center();
+      robot_shape.value().scale(global::settings.env.polygon.scaling);
+      OMPL_INFORM("Loaded polygon robot model from %s with %d vertices.",
+                  robot_shape_source.value().c_str(),
+                  robot_shape.value().points.size());
+      OMPL_INFORM("\tBounds: [%.2f %.2f] -- [%.2f %.2f]",
+                  robot_shape.value().min().x, robot_shape.value().min().y,
+                  robot_shape.value().max().x, robot_shape.value().max().y);
+    } else if (robot_shape_source.value().find("yaml") != std::string::npos) {
+      robot_shape = YamlPolygonLoader::load(robot_shape_source)[0];
+      OMPL_INFORM("Loaded (YAML) polygon robot model from %s with %d vertices.",
+                  robot_shape_source.value().c_str(),
+                  robot_shape.value().points.size());
+      OMPL_INFORM("\tBounds: [%.2f %.2f] -- [%.2f %.2f]",
+                  robot_shape.value().min().x, robot_shape.value().min().y,
+                  robot_shape.value().max().x, robot_shape.value().max().y);
+    }
   }
 }
 

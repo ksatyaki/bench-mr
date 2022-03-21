@@ -413,6 +413,8 @@ struct GlobalSettings : public Group {
     // planners
     Stopwatch steering_timer;
 
+    Property<double> goal_bias {0.05, "goal_bias", this};
+
     Property<double> state_equality_tolerance{1e-4, "state_equality_tolerance",
                                               this};
     Property<double> cost_threshold{100, "cost_threshold", this};

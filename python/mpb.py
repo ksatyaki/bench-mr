@@ -129,6 +129,11 @@ class MPB:
         self["env.grid.image.desired_width"] = desired_width
         self["env.grid.image.desired_height"] = desired_height
         self["env.grid.image.occupancy_threshold"] = occupancy_threshold
+        
+    def set_image_yaml_env(self,
+                           filename: str):
+        self["env.type"] = "yaml"
+        self["env.grid.image.source"] = filename
 
     def set_polygon_env(self,
                         filename: str,

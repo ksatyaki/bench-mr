@@ -11,7 +11,8 @@ enum SteeringType {
   STEER_TYPE_LINEAR = 4,
   STEER_TYPE_CC_DUBINS = 5,
   STEER_TYPE_HC_REEDS_SHEPP = 6,
-  STEER_TYPE_CC_REEDS_SHEPP = 7
+  STEER_TYPE_CC_REEDS_SHEPP = 7,
+  STEER_TYPE_CAR = 8
 };
 
 inline std::string to_string(Steering::SteeringType t) {
@@ -32,6 +33,8 @@ inline std::string to_string(Steering::SteeringType t) {
       return "HC Reeds-Shepp";
     case STEER_TYPE_CC_REEDS_SHEPP:
       return "CC Reeds-Shepp";
+    case STEER_TYPE_CAR:
+      return "Car state space";
     default:
       return "Unknown";
   }
