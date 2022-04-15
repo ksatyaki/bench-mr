@@ -13,6 +13,7 @@
 #include <ompl/mod/objectives/DTCOptimizationObjective.h>
 #include <ompl/mod/objectives/IntensityMapOptimizationObjective.h>
 #include <ompl/mod/objectives/UpstreamCriterionOptimizationObjective.h>
+#include <ompl/mod/samplers/IntensityMapSampler.h>
 #include <utils/OptimizationObjective.h>
 
 #include <steering_functions/include/ompl_state_spaces/CurvatureStateSpace.hpp>
@@ -189,6 +190,11 @@ void PlannerSettings::GlobalSettings::OmplSettings::initializeSampler() const {
           "Selected sampler not supported for selected steering function."
           " Using default sampler instead (i.i.d.).");
     }
+  } else if (global::settings.ompl.sampler.value() ==
+             std::string("intensity")) {
+    this->space_info->setValidStateSamplerAllocator(std::bind(
+        ompl::MoD::IntensityMapSampler::allocate, std::placeholders::_1,
+        global::settings.ompl.sampler.value()));
   }
 }
 

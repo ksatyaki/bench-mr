@@ -90,7 +90,7 @@ struct GlobalSettings : public Group {
 
     /**
      * Set #environment to the specified environment based on #type.
-     * 
+     *
      * Handles all cases except grid type with moving_ai generator, which is
      * handled separately.
      */
@@ -108,13 +108,13 @@ struct GlobalSettings : public Group {
       Property<std::string> generator{"corridor", "generator", this};
       /**
        * Width of the grid environment as number of cells.
-       * 
+       *
        * Property has no effect for image #generator.
        */
       Property<unsigned int> width{50, "width", this};
       /**
        * Height of the grid environment as number of cells.
-       * 
+       *
        * Property has no effect for image #generator.
        */
       Property<unsigned int> height{50, "height", this};
@@ -161,9 +161,9 @@ struct GlobalSettings : public Group {
                                      this};
 
         /**
-         * Threshold to set a pixel to occupied based of greyscale value in 
+         * Threshold to set a pixel to occupied based of greyscale value in
          * image.
-         * 
+         *
          * All pixels with \f$p_{ij}\leq t\f$ will be set to occupied, where
          * \f$t\in[0,1]\f$. That is, the higher \f$t\f$ the more obstacles are
          * in the map.
@@ -173,7 +173,7 @@ struct GlobalSettings : public Group {
         /**
          * Desired width of the grid environment as number of cells after
          * converting image to grid.
-         * 
+         *
          * See GridMaze::createFromImage for more details.
          */
         Property<int> desired_width{0, "desired_width", this};
@@ -181,7 +181,7 @@ struct GlobalSettings : public Group {
         /**
          * Desired height of the grid environment as number of cells after
          * converting image to grid.
-         * 
+         *
          * See GridMaze::createFromImage for more details.
          */
         Property<int> desired_height{0, "desired_height", this};
@@ -413,7 +413,7 @@ struct GlobalSettings : public Group {
     // planners
     Stopwatch steering_timer;
 
-    Property<double> goal_bias {0.05, "goal_bias", this};
+    Property<double> goal_bias{0.05, "goal_bias", this};
 
     Property<double> state_equality_tolerance{1e-4, "state_equality_tolerance",
                                               this};
@@ -427,6 +427,9 @@ struct GlobalSettings : public Group {
      * Currently supported: "iid", "halton"
      */
     Property<std::string> sampler{"iid", "sampler", this};
+
+    Property<std::string> intensity_map_file_name{
+        "none", "intensity_map_file_name", this};
 
     /**
      * The optimization objective used by OMPL.
