@@ -190,11 +190,6 @@ void PlannerSettings::GlobalSettings::OmplSettings::initializeSampler() const {
           "Selected sampler not supported for selected steering function."
           " Using default sampler instead (i.i.d.).");
     }
-  } else if (global::settings.ompl.sampler.value() ==
-             std::string("intensity")) {
-    this->space_info->setValidStateSamplerAllocator(std::bind(
-        ompl::MoD::IntensityMapSampler::allocate, std::placeholders::_1,
-        global::settings.ompl.sampler.value()));
   }
 }
 
@@ -255,6 +250,18 @@ void PlannerSettings::GlobalSettings::SteerSettings::initializeSteering()
 
   global::settings.ompl.space_info =
       std::make_shared<ob::SpaceInformation>(global::settings.ompl.state_space);
+
+  if (global::settings.ompl.sampler.value() == std::string("intensity")) {
+    OMPL_INFORM("sampler file: %s",
+                global::settings.ompl.intensity_map_file_name.value().c_str());
+    global::settings.ompl.space_info->setValidStateSamplerAllocator(
+        [capture0 = global::settings.ompl.intensity_map_file_name.value()](
+            auto &&PH1) {
+          return ompl::MoD::IntensityMapSampler::allocate(
+              std::forward<decltype(PH1)>(PH1), capture0);
+        });
+  }
+
   auto opt_obj_str = global::settings.ompl.optimization_objective.value();
   if (opt_obj_str == std::string("min_pathlength")) {
     global::settings.ompl.objective =
@@ -279,8 +286,9 @@ void PlannerSettings::GlobalSettings::SteerSettings::initializeSteering()
   } else if (opt_obj_str == std::string("cliff")) {
     global::settings.ompl.objective =
         std::make_shared<ompl::MoD::UpstreamCriterionOptimizationObjective>(
-            global::settings.ompl.space_info, ompl::MoD::MapType::CLiFFMap,
-            global::settings.mod.mod_file_name.value(), 1.0, 1.0,
+            global::settings.ompl.space_info,
+            ::MoD::CLiFFMap(global::settings.mod.mod_file_name.value()),
+            global::settings.ompl.intensity_map_file_name, 1.0, 1.0,
             global::settings.mod.weight_cliff.value());
   } else if (opt_obj_str == "gmmt") {
     global::settings.ompl.objective =
@@ -298,7 +306,8 @@ void PlannerSettings::GlobalSettings::SteerSettings::initializeSteering()
     global::settings.ompl.objective =
         std::make_shared<ompl::MoD::DTCOptimizationObjective>(
             global::settings.ompl.space_info,
-            global::settings.mod.mod_file_name.value(), 1.0, 1.0,
+            global::settings.mod.mod_file_name.value(),
+            global::settings.ompl.intensity_map_file_name, 1.0, 1.0,
             global::settings.mod.weight_dtc.value(),
             global::settings.mod.max_vs,
             global::settings.mod.mahalanobis_distance_threshold, true);

@@ -1,10 +1,11 @@
 #pragma once
 
+#include <metrics/AOLMetric.h>
 #include <metrics/ClearingMetric.h>
 #include <metrics/MaxCurvatureMetric.h>
 #include <metrics/NormalizedCurvatureMetric.h>
 #include <metrics/PathLengthMetric.h>
-#include <metrics/AOLMetric.h>
+#include <metrics/TotalCostMetric.h>
 #include <smoothers/chomp/CHOMP.h>
 
 #include <smoothers/ompl/OmplSmoother.hpp>
@@ -50,11 +51,9 @@ struct PathEvaluation {
       if (prev->distance(*current) <= 0) {
         ++current;
         ++next;
-      }
-      else if (current->distance(*next) <= 0) {
+      } else if (current->distance(*next) <= 0) {
         ++next;
-      }
-      else {
+      } else {
         const double yaw_prev = PlannerUtils::slope(*prev, *current);
         const double yaw_next = PlannerUtils::slope(*current, *next);
 
@@ -94,6 +93,7 @@ struct PathEvaluation {
               .distance(global::settings.environment->goal()) <=
           global::settings.exact_goal_radius;
       stats.path_length = PathLengthMetric::evaluate(solution);
+      stats.total_cost = TotalCostMetric::evaluate(solution);
       stats.max_curvature = MaxCurvatureMetric::evaluate(solution);
       stats.normalized_curvature =
           NormalizedCurvatureMetric::evaluate(solution);
@@ -145,6 +145,7 @@ struct PathEvaluation {
             global::settings.exact_goal_radius;
       }
       stats.path_length = PathLengthMetric::evaluate(solution);
+      stats.total_cost = TotalCostMetric::evaluate(solution);
       stats.max_curvature = MaxCurvatureMetric::evaluate(solution);
       stats.normalized_curvature =
           NormalizedCurvatureMetric::evaluate(solution);

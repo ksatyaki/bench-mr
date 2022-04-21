@@ -11,6 +11,7 @@ stat_names = {
     'planning_time': 'Computation Time',
     'cusps': 'Cusps',
     'aggregate': 'Aggregate',
+    'total_cost': 'Total Cost'
 }
 
 metric_properties = {
@@ -47,6 +48,9 @@ metric_properties = {
     'aol': {
         'show_std': True,
         'minimize': True
+    },
+    'total_cost': {
+        'show_std': True,
     },
     'cusps': {
         'minimize': True,

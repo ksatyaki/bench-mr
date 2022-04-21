@@ -1,9 +1,12 @@
 #pragma once
 
-#include <ompl/geometric/PathGeometric.h>
+#include <ompl/base/OptimizationObjective.h>
 #include <ompl/control/PathControl.h>
+#include <ompl/geometric/PathGeometric.h>
+
 #include <cmath>
 #include <iomanip>
+
 #include "base/PlannerSettings.h"
 #include "base/Primitives.h"
 
@@ -26,8 +29,9 @@ class PlannerUtils {
   /**
    * Compute the angular slope between two points.
    *
-   * The slope will be zero, for example, for a line from \f$(0,0)\f$ to \f$(1,0)\f$.
-   * The slope will be \f$\frac{\pi}{2}\f$, for example, for a line from \f$(0,0)\f$ to \f$(0,1)\f$.
+   * The slope will be zero, for example, for a line from \f$(0,0)\f$ to
+   * \f$(1,0)\f$. The slope will be \f$\frac{\pi}{2}\f$, for example, for a line
+   * from \f$(0,0)\f$ to \f$(0,1)\f$.
    *
    * @param x1 X-coordinate of first point.
    * @param y1 Y-coordinate of first point.
@@ -68,8 +72,8 @@ class PlannerUtils {
    * Check whether two states are equal (up to some tolerance).
    *
    * Check compares x, y, and yaw difference. All have to be within tolerance
-   * for states to be considered equal. 
-   * Tolerance is set in 
+   * for states to be considered equal.
+   * Tolerance is set in
    * PlannerSettings::GlobalSettings::OmplSettings::state_equality_tolerance.
    *
    * @param a The first state.
@@ -96,7 +100,8 @@ class PlannerUtils {
    *
    * This function does not consider the collision model, since points only
    * contain x and y coordinates.
-   * The environment is set through PlannerSettings::GlobalSettings::environment.
+   * The environment is set through
+   * PlannerSettings::GlobalSettings::environment.
    *
    * @param path The points on the path.
    * @returns True if the path collides with the environment, false otherwise.
@@ -116,13 +121,15 @@ class PlannerUtils {
   }
 
   /**
-   * Collision check that respects the collision model. 
+   * Collision check that respects the collision model.
    *
-   * No additional interpolation along the path is performed prior to collision checking.
+   * No additional interpolation along the path is performed prior to collision
+   * checking.
    *
-   * The collision model is set in 
+   * The collision model is set in
    * PlannerSettings::GlobalSettings::EnvironmentSettings::CollisionSettings::collision_model.
-   * The environment is set through PlannerSettings::GlobalSettings::environment.
+   * The environment is set through
+   * PlannerSettings::GlobalSettings::environment.
    *
    * @param The OMPL path to check.
    * @returns True if the path collides with the environment, otherwise false.
@@ -138,15 +145,17 @@ class PlannerUtils {
   /**
    * Collision check of segment between two states.
    *
-   * The collision model is set in 
+   * The collision model is set in
    * PlannerSettings::GlobalSettings::EnvironmentSettings::CollisionSettings::collision_model.
-   * The environment is set through PlannerSettings::GlobalSettings::environment.
-   * The steering function used to compute the path between the two state is defined by
+   * The environment is set through
+   * PlannerSettings::GlobalSettings::environment. The steering function used to
+   * compute the path between the two state is defined by
    * PlannerSettings::GlobalSettings::OmplSettings::state_space.
    *
    * @param a The first state of the path segment to check.
    * @param b The last state of the path segment to check.
-   * @returns True if the segment collides with the environment, otherwise false.
+   * @returns True if the segment collides with the environment, otherwise
+   * false.
    */
   static bool collides(const ompl::base::State *a, const ompl::base::State *b) {
 #ifdef DEBUG
@@ -163,14 +172,15 @@ class PlannerUtils {
   }
 
   /**
-   * Collision check that respects the collision model. 
+   * Collision check that respects the collision model.
    *
    * The path is interpolated prior to collision checking.
    *
-   * The collision model is set in 
+   * The collision model is set in
    * PlannerSettings::GlobalSettings::EnvironmentSettings::CollisionSettings::collision_model.
-   * The environment is set through PlannerSettings::GlobalSettings::environment.
-   * Interpolation is based on the state space of the path.
+   * The environment is set through
+   * PlannerSettings::GlobalSettings::environment. Interpolation is based on the
+   * state space of the path.
    *
    * @param a Deprecated.
    * @param b Deprecated.
@@ -199,7 +209,8 @@ class PlannerUtils {
    *
    * This function does not consider the collision model, since points only
    * contain x and y coordinates.
-   * The environment is set through PlannerSettings::GlobalSettings::environment.
+   * The environment is set through
+   * PlannerSettings::GlobalSettings::environment.
    *
    * @param path The points on the path.
    * @param collisions Points that collide with the environment.
@@ -228,16 +239,18 @@ class PlannerUtils {
   /**
    * Collision check of segment between two states.
    *
-   * The collision model is set in 
+   * The collision model is set in
    * PlannerSettings::GlobalSettings::EnvironmentSettings::CollisionSettings::collision_model.
-   * The environment is set through PlannerSettings::GlobalSettings::environment.
-   * The steering function used to compute the path between the two state is defined by
+   * The environment is set through
+   * PlannerSettings::GlobalSettings::environment. The steering function used to
+   * compute the path between the two state is defined by
    * PlannerSettings::GlobalSettings::OmplSettings::state_space.
    *
    * @param a The first state of the path segment to check.
    * @param b The last state of the path segment to check.
    * @param collisions Points that collide with the environment.
-   * @returns True if the segment collides with the environment, otherwise false.
+   * @returns True if the segment collides with the environment, otherwise
+   * false.
    */
   static bool collides(const ompl::base::State *a, const ompl::base::State *b,
                        std::vector<Point> &collisions) {
@@ -415,8 +428,10 @@ class PlannerUtils {
    *
    * @param a The first point.
    * @param b The last point.
-   * @param dt The step to take (where \f$t\f$ parametrizes the line, i.e., \f$t\in[0,1]\f$).
-   * @returns The points on the line from \p a to \p b, including both of these points.
+   * @param dt The step to take (where \f$t\f$ parametrizes the line, i.e.,
+   * \f$t\in[0,1]\f$).
+   * @returns The points on the line from \p a to \p b, including both of these
+   * points.
    */
   static std::vector<Point> linearInterpolate(const Point &a, const Point &b,
                                               double dt = 0.1) {
@@ -439,13 +454,15 @@ class PlannerUtils {
 
   /**
    * \overload
-   * 
+   *
    * This does not take into account yaw and returns a list of xy points.
    *
    * @param a The first state.
    * @param b The last state.
-   * @param dt The step to take (where \f$t\f$ parametrizes the line, i.e., \f$t\in[0,1]\f$).
-   * @returns The points on the line from \p a to \p b, including both of these points.
+   * @param dt The step to take (where \f$t\f$ parametrizes the line, i.e.,
+   * \f$t\in[0,1]\f$).
+   * @returns The points on the line from \p a to \p b, including both of these
+   * points.
    */
   static std::vector<Point> linearInterpolate(ompl::base::State *a,
                                               ompl::base::State *b,
@@ -458,7 +475,7 @@ class PlannerUtils {
   /**
    * Find closest collision-free point in an ordered set of points.
    *
-   * The closest point will be converted to a state, whose yaw is computed 
+   * The closest point will be converted to a state, whose yaw is computed
    * based on neighboring points.
    *
    * @param x The reference point.
@@ -492,9 +509,10 @@ class PlannerUtils {
    *
    * The length between two points is calculated as Euclidean distance.
    * The total length is computed as the sum of pairwise distances.
-   * 
+   *
    * @param path The ordered points along the path.
-   * @returns The total length of the path as the sum of pairwise Euclidean distances.
+   * @returns The total length of the path as the sum of pairwise Euclidean
+   * distances.
    */
   static double totalLength(const std::vector<Point> &path) {
     double l = 0;
@@ -502,6 +520,28 @@ class PlannerUtils {
       l += path[i].distance(path[i - 1]);
     }
     return l;
+  }
+
+  static double totalCost(const ompl::geometric::PathGeometric &trajectory) {
+    double c(0.0);
+    for (size_t i = 1; i < trajectory.getStateCount(); ++i) {
+      c = c +
+          (global::settings.ompl.objective)
+              ->motionCost(trajectory.getState(i - 1), trajectory.getState(i))
+              .value();
+    }
+    return c;
+  }
+
+  static double totalCost(const ompl::control::PathControl &trajectory) {
+    double c(0.0);
+    for (size_t i = 1; i < trajectory.getStateCount(); ++i) {
+      c = c +
+          (global::settings.ompl.objective)
+              ->motionCost(trajectory.getState(i - 1), trajectory.getState(i))
+              .value();
+    }
+    return c;
   }
 
   /**
