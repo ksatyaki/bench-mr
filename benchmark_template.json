@@ -130,9 +130,9 @@
       "max_vs": 1.0,
       "mdt": 10.0,
       "mod_file_name": "",
-      "weight_cliff": 0.2,
-      "weight_dtc": 0.2,
-      "weight_gmmt": 0.2,
+      "weight_cliff": 0.1,
+      "weight_dtc": 0.02,
+      "weight_gmmt": 0.1,
       "weight_intensity": 0.2
     },
     "ompl": {

@@ -8,21 +8,19 @@
 #include <ompl/base/spaces/RealVectorStateSpace.h>
 #include <ompl/base/spaces/ReedsSheppStateSpace.h>
 #include <ompl/base/spaces/SE2StateSpace.h>
-#include <ompl/geometric/PathGeometric.h>
-#include <ompl/geometric/PathSimplifier.h>
-#include <ompl/geometric/SimpleSetup.h>
-
 #include <ompl/control/planners/est/EST.h>
 #include <ompl/control/planners/kpiece/KPIECE1.h>
 #include <ompl/control/planners/pdst/PDST.h>
 #include <ompl/control/planners/rrt/RRT.h>
 #include <ompl/control/planners/sst/SST.h>
-
-#include <ompl/geometric/planners/informedtrees/BITstar.h>
+#include <ompl/geometric/PathGeometric.h>
+#include <ompl/geometric/PathSimplifier.h>
+#include <ompl/geometric/SimpleSetup.h>
 #include <ompl/geometric/planners/cforest/CForest.h>
 #include <ompl/geometric/planners/est/EST.h>
 #include <ompl/geometric/planners/fmt/BFMT.h>
 #include <ompl/geometric/planners/fmt/FMT.h>
+#include <ompl/geometric/planners/informedtrees/BITstar.h>
 #include <ompl/geometric/planners/kpiece/KPIECE1.h>
 #include <ompl/geometric/planners/pdst/PDST.h>
 #include <ompl/geometric/planners/prm/PRMstar.h>
@@ -69,14 +67,16 @@ class OMPLPlanner : public AbstractPlanner {
             const std::vector<const ob::State *> &states, const ob::Cost cost) {
           og::PathGeometric solution(global::settings.ompl.space_info);
           // the OMPL intermediary solution doesn't include the start state
-          solution.append(global::settings.environment->startState());
-          for (const auto *state : states) solution.append(state);
-          // the OMPL intermediary solution doesn't include the goal state
           solution.append(global::settings.environment->goalState());
+          for (const auto *state : states) solution.prepend(state);
+          // the OMPL intermediary solution doesn't include the goal state
+          solution.prepend(global::settings.environment->startState());
           IntermediarySolution is(watch.elapsed(), cost.value(), solution);
           intermediarySolutions.emplace_back(is);
         });
-
+    OMPL_INFORM(("Using Optimization Objective with description: " +
+                 problem->getOptimizationObjective()->getDescription())
+                    .c_str());
     watch.start();
     auto solved = ss->solve(global::settings.max_planning_time);
     OMPL_INFORM("OMPL %s planning status: %s", _omplPlanner->getName().c_str(),
