@@ -1,4 +1,4 @@
-image: ../bench_ws/src/bench-mr/maps/office-cubicles.pgm
+image: office-cubicles.pgm
 resolution: 0.100000
 origin: [-10.000000, -10.000000, 0.000000]
 negate: 0
