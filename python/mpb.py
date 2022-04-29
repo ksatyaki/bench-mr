@@ -255,7 +255,7 @@ class MPB:
         self.set_id(id)
         self.set_subfolder(subfolder)
         log_filename = os.path.join(subfolder, self.id + ".log")
-        logfile = open(log_filename, 'w')
+        logfile = open(log_filename, 'w+')
         if not silence:
             print("Running MPB with ID %s (log file at %s)..." %
                   (self.id, log_filename))
