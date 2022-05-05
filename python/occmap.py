@@ -21,7 +21,7 @@ class OccMap:
             print("yamlToOccMapMsg needs a yaml file name as a string. Please provide the right parameters.")
 
         occmap_file_object = open(map_yaml_filename, 'r+')
-        yaml_dict = yaml.load(occmap_file_object)
+        yaml_dict = yaml.load(occmap_file_object, Loader=yaml.CLoader)
 
         self.image_file_name = yaml_dict['image']
         self.image = mimage.imread(map_yaml_filename[:map_yaml_filename.rfind(os.path.sep)] + os.path.sep + self.image_file_name)

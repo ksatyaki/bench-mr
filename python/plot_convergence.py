@@ -58,6 +58,7 @@ def plot_convergence(json_file: str, run_id: str = 'all',
 
     run_id = run_ids[0]
     print_run_info(data, run_id, run_ids)
+    print("Will print the stats: {}".format(stat_keys))
     for si, stat_key in enumerate(stat_keys):
         run = data["runs"][run_id]
         if combine_views:
