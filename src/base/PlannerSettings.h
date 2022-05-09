@@ -707,7 +707,7 @@ struct GlobalSettings : public Group {
 
   void load(const nlohmann::json &j) {
     Group::load(j);
-    ompl::RNG::setSeed(ompl.seed);
+    if(ompl.seed != -1) { ompl::RNG::setSeed(ompl.seed); }
   }
 };
 }  // namespace PlannerSettings
