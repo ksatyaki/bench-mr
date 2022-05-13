@@ -1,9 +1,12 @@
 #!/usr/bin/env python3
-import click
 import json
 import os
-from definitions import steer_functions, steer_function_names, smoother_names, smoothers, planner_names, robot_models, robot_models_names
+
+import click
 import numpy as np
+
+from definitions import steer_functions, steer_function_names, smoother_names, smoothers, planner_names, robot_models, \
+    robot_models_names
 
 # Fix random seed (used by kernel density estimation in violin plots)
 np.random.seed(123)
@@ -171,7 +174,7 @@ def parse_smoothers(ss: str) -> {str: str}:
         for s in ss:
             if (s in key.lower().replace(' ', '').replace('_', '').replace(
                     '-', '') or s in val.lower().replace(' ', '').replace(
-                        '_', '').replace('-', '')):
+                '_', '').replace('-', '')):
                 result[val] = s
     return result
 
@@ -192,18 +195,18 @@ def print_run_info(data, run_id: int, run_ids: [int]):
         '+' * 25, run_id, run_ids.index(run_id) + 1, len(run_ids), '+' * 25)
     click.echo(title)
     steering = steer_function_names[steer_functions[data["settings"]["steer"]
-                                                    ["steering_type"]]]
+    ["steering_type"]]]
     controlbased = data["settings"]["benchmark"]["control_planners_on"]
 
     robot_model = robot_models_names[robot_models[data["settings"]
-                                                  ["forwardpropagation"]["forward_propagation_type"]]]
+    ["forwardpropagation"]["forward_propagation_type"]]]
     if "settings" in run:
         steering = steer_function_names[steer_functions[
             run["settings"]["steer"]["steering_type"]]]
         robot_model = robot_models_names[robot_models[run["settings"]
-                                                      ["forwardpropagation"]["forward_propagation_type"]]]
+        ["forwardpropagation"]["forward_propagation_type"]]]
 
-    if(controlbased):
+    if (controlbased):
         click.echo('+ Robot Model:        %s ' % robot_model)
     else:
         click.echo('+ Steering:        %s ' % steering)
