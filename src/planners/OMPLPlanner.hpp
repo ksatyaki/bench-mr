@@ -60,6 +60,8 @@ class OMPLPlanner : public AbstractPlanner {
     ss->setPlanner(_omplPlanner);
     ss->setup();
 
+    ss->print();
+
     Stopwatch watch;
     auto problem = _omplPlanner->getProblemDefinition();
     problem->setIntermediateSolutionCallback(

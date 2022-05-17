@@ -424,7 +424,7 @@ struct GlobalSettings : public Group {
     /**
      * The sampler used by OMPL.
      *
-     * Currently supported: "iid", "halton"
+     * Currently supported: "iid", "halton", intensity, dijkstra
      */
     Property<std::string> sampler{"iid", "sampler", this};
 
