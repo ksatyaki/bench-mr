@@ -127,6 +127,8 @@
     "max_path_length": 10000.0,
     "max_planning_time": 15.0,
     "mod": {
+      "dijkstra_bias": 0.1,
+      "dijkstra_cell_size": 0.5,
       "max_vs": 1.0,
       "mdt": 10.0,
       "mod_file_name": "",

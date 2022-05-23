@@ -339,8 +339,8 @@ const {
                             global::settings.ompl.objective,
                             {global::settings.env.start.x, global::settings.env.start.y, global::settings.env.start.theta},
                             {global::settings.env.goal.x, global::settings.env.goal.y, global::settings.env.goal.theta},
-                            0.5,
-                            0.1);
+                            global::settings.mod.dijkstra_cell_size.value(),
+                            global::settings.mod.dijkstra_bias.value());
                 });
         OMPL_INFORM("Dijkstra sampler was set...");
     }

@@ -490,7 +490,7 @@ class MPB:
                                 continue
                             for pi, (planner, plan) in enumerate(run["plans"].items()):
                                 if plan_names:
-                                    target["runs"][run_id]["plans"][plan_names[plan_index + pi]] = plan
+                                    target["runs"][run_id]["plans"][plan_names[plan_index + i]] = plan
                                     continue
                                 if planner in target["runs"][run_id]["plans"]:
                                     if not silence:
