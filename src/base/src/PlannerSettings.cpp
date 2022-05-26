@@ -251,17 +251,6 @@ const {
     global::settings.ompl.space_info =
             std::make_shared<ob::SpaceInformation>(global::settings.ompl.state_space);
 
-    if (global::settings.ompl.sampler.value() == std::string("intensity")) {
-        OMPL_INFORM("sampler file: %s",
-                    global::settings.ompl.intensity_map_file_name.value().c_str());
-        global::settings.ompl.space_info->setValidStateSamplerAllocator(
-                [capture0 = global::settings.ompl.intensity_map_file_name.value()](
-                        auto &&PH1) {
-                    return ompl::MoD::IntensityMapSampler::allocate(
-                            std::forward<decltype(PH1)>(PH1), capture0);
-                });
-    }
-
     auto opt_obj_str = global::settings.ompl.optimization_objective.value();
     if (opt_obj_str == std::string("min_pathlength")) {
         global::settings.ompl.objective =
@@ -286,22 +275,31 @@ const {
     } else if (opt_obj_str == std::string("cliff")) {
         global::settings.ompl.objective =
                 std::make_shared<ompl::MoD::UpstreamCriterionOptimizationObjective>(
-                        global::settings.ompl.space_info,
-                        ::MoD::CLiFFMap(global::settings.mod.mod_file_name.value()),
+                        global::settings.ompl.space_info, ::MoD::CLiFFMap(global::settings.mod.mod_file_name.value()),
                         global::settings.ompl.intensity_map_file_name, 1.0, 1.0,
-                        global::settings.mod.weight_cliff.value());
+                        global::settings.mod.weight_cliff.value(), global::settings.ompl.sampler.value(),
+                        global::settings.mod.sampling_bias.value(),
+                        false);
     } else if (opt_obj_str == "gmmt") {
         global::settings.ompl.objective =
-                std::make_shared<ompl::MoD::UpstreamCriterionOptimizationObjective>(
-                        global::settings.ompl.space_info, ompl::MoD::MapType::GMMTMap,
-                        global::settings.mod.mod_file_name.value(), 1.0, 1.0,
-                        global::settings.mod.weight_gmmt.value());
+                std::make_shared<ompl::MoD::UpstreamCriterionOptimizationObjective>(global::settings.ompl.space_info,
+                                                                                    ompl::MoD::MapType::GMMTMap,
+                                                                                    global::settings.mod.mod_file_name.value(),
+                                                                                    1.0, 1.0,
+                                                                                    global::settings.mod.weight_gmmt.value(),
+                                                                                    global::settings.ompl.sampler.value(),
+                                                                                    global::settings.ompl.intensity_map_file_name.value(),
+                                                                                    global::settings.mod.sampling_bias.value(),
+                                                                                    false);
     } else if (opt_obj_str == "intensity") {
         global::settings.ompl.objective =
-                std::make_shared<ompl::MoD::IntensityMapOptimizationObjective>(
-                        global::settings.ompl.space_info,
-                        global::settings.mod.mod_file_name.value(), 1.0, 1.0,
-                        global::settings.mod.weight_intensity.value());
+                std::make_shared<ompl::MoD::IntensityMapOptimizationObjective>(global::settings.ompl.space_info,
+                                                                               global::settings.mod.mod_file_name.value(),
+                                                                               1.0, 1.0,
+                                                                               global::settings.mod.weight_intensity.value(),
+                                                                               global::settings.ompl.sampler.value(),
+                                                                               global::settings.mod.sampling_bias.value(),
+                                                                               false);
     } else if (opt_obj_str == "dtc") {
         global::settings.ompl.objective =
                 std::make_shared<ompl::MoD::DTCOptimizationObjective>(
@@ -310,44 +308,18 @@ const {
                         global::settings.ompl.intensity_map_file_name, 1.0, 1.0,
                         global::settings.mod.weight_dtc.value(),
                         global::settings.mod.max_vs,
-                        global::settings.mod.mahalanobis_distance_threshold, true);
+                        global::settings.mod.mahalanobis_distance_threshold, true,
+                        global::settings.ompl.sampler.value(),
+                        global::settings.mod.sampling_bias.value(),
+                        false);
     } else {
         global::settings.ompl.objective =
                 std::make_shared<CustomPathLengthOptimizationObjective>(
                         global::settings.ompl.space_info);
     }
 
-    if (global::settings.ompl.sampler.value() == std::string("dijkstra")) {
-        std::string mod_type;
-        if (opt_obj_str == "cliff" or opt_obj_str == "dtc") {
-            mod_type = "cliffmap";
-        } else if (opt_obj_str == "gmmt") {
-            mod_type = "gmmtmap";
-        }
-        else {
-            OMPL_INFORM("MoD type is not recognized. Program might crash.");
-        }
-
-        global::settings.ompl.space_info->clearValidStateSamplerAllocator();
-        OMPL_INFORM("Dijkstra sampler will be used with %s.", mod_type.c_str());
-        global::settings.ompl.space_info->setValidStateSamplerAllocator(
-                [=](auto &&PH1) {
-                    return ompl::MoD::DijkstraSampler::allocate(
-                            std::forward<decltype(PH1)>(PH1),
-                            global::settings.mod.mod_file_name.value(),
-                            mod_type,
-                            global::settings.ompl.objective,
-                            {global::settings.env.start.x, global::settings.env.start.y, global::settings.env.start.theta},
-                            {global::settings.env.goal.x, global::settings.env.goal.y, global::settings.env.goal.theta},
-                            global::settings.mod.dijkstra_cell_size.value(),
-                            global::settings.mod.dijkstra_bias.value());
-                });
-        OMPL_INFORM("Dijkstra sampler was set...");
-    }
-
     OMPL_INFORM("Initialized steer function %s.",
                 Steering::to_string(steering_type).c_str());
-    // auto ptr = global::settings.ompl.space_info->allocValidStateSampler();
 }
 
 void PlannerSettings::GlobalSettings::EnvironmentSettings::createEnvironment() {

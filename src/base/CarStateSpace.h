@@ -20,13 +20,12 @@
 
 #include <ompl/base/spaces/DubinsStateSpace.h>
 
-namespace ompl {
-namespace base {
+namespace ompl::base {
 class CarStateSpace : public ompl::base::DubinsStateSpace {
  public:
-  CarStateSpace(double turning_radius, bool is_symmetric = true);
+  explicit CarStateSpace(double turning_radius, bool is_symmetric = true);
+  [[nodiscard]] bool isMetricSpace() const override {return true;}
   unsigned int validSegmentCount(const State *state1,
                                  const State *state2) const override;
 };
-}  // namespace base
 }  // namespace ompl

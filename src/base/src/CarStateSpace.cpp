@@ -17,8 +17,7 @@
  */
 
 #include "base/CarStateSpace.h"
-namespace ompl {
-namespace base {
+namespace ompl::base {
 CarStateSpace::CarStateSpace(double turning_radius, bool is_symmetric)
     : DubinsStateSpace(turning_radius, is_symmetric) {}
 
@@ -27,5 +26,4 @@ unsigned int CarStateSpace::validSegmentCount(const State *state1,
   return longestValidSegmentCountFactor_ *
          (unsigned int)ceil(distance(state1, state2) / longestValidSegment_);
 }
-}  // namespace base
 }  // namespace ompl

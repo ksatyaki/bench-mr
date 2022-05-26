@@ -14,7 +14,8 @@ from copy import deepcopy
 
 from utils import *
 from multiprocessing import Pool
-from tqdm.notebook import tqdm
+from tqdm.notebook import tqdm as tqdm_notebook
+from tqdm import tqdm
 
 MPB_BINARY = './benchmark'
 MPB_BINARY_DIR = '../bin'
@@ -75,7 +76,7 @@ class MPB:
         self._planners = [planner for planner, used in self["benchmark.planning"].items(
         ) if used]  # type: [str]
         self._smoothers = [smoother for smoother,
-                           used in self["benchmark.smoothing"].items() if used]  # type: [str]
+                                        used in self["benchmark.smoothing"].items() if used]  # type: [str]
         self._steer_functions = [steer_functions[index]
                                  for index in self["benchmark.steer_functions"]]  # type: [str]
         self._robot_models = [robot_models[index]
@@ -86,8 +87,8 @@ class MPB:
         if not os.path.exists(config_file):
             raise Exception('Could not find configuration template file at %s. ' % os.path.abspath(
                 os.path.join(MPB_BINARY_DIR, 'benchmark_template.json')) +
-                'Make sure you run the benchmark binary without CLI arguments to generate ' +
-                'benchmark_template.json.')
+                            'Make sure you run the benchmark binary without CLI arguments to generate ' +
+                            'benchmark_template.json.')
         with open(config_file, 'r') as f:
             config = json.load(f)["settings"]  # type: dict
         return config
@@ -129,7 +130,7 @@ class MPB:
         self["env.grid.image.desired_width"] = desired_width
         self["env.grid.image.desired_height"] = desired_height
         self["env.grid.image.occupancy_threshold"] = occupancy_threshold
-        
+
     def set_image_yaml_env(self,
                            filename: str):
         self["env.type"] = "yaml"
@@ -262,7 +263,7 @@ class MPB:
         num_planners = len(self._planners)
         total_iterations = num_planners * len(self._steer_functions) * runs
         if show_progress_bar:
-            pbar = tqdm(range(total_iterations), desc=self.id) #, ncols='100%')
+            pbar = tqdm(range(total_iterations), desc=self.id)  # , ncols='100%')
         success = True
         code = 0
         results_filenames = []
@@ -341,7 +342,7 @@ class MPB:
             if code is not None and code != 0:
                 print("Error (%i) occurred for MPB with ID %s using planner %s." % (
                     code, self.id, convert_planner_name(planner)),
-                    file=sys.stderr)
+                      file=sys.stderr)
                 success = False
                 continue
             if ip > 0:
@@ -388,7 +389,7 @@ class MPB:
         from trajectory import visualize_grid
         if set_suptitle:
             kwargs["suptitle"] = self.id
-        visualize_grid(self.results_filename,  **kwargs)
+        visualize_grid(self.results_filename, **kwargs)
 
     def plot_planner_stats(self, **kwargs):
         if not os.path.exists(self.results_filename):

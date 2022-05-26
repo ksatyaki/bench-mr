@@ -141,8 +141,8 @@ AbstractPlanner::AbstractPlanner(const std::string &name) {
     }
 
   } else {
-    ss->setOptimizationObjective(global::settings.ompl.objective);
     ss->setStartAndGoalStates(start, goal, global::settings.exact_goal_radius);
+    ss->setOptimizationObjective(global::settings.ompl.objective);
     ss->setup();
   }
 

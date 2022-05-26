@@ -157,7 +157,3 @@ target_link_libraries(generate_obstacle_ratio_benchmarks ${EXTRA_LIB})
 add_executable(generate_turning_radii_benchmarks experiments/generate_turning_radii_benchmarks.cpp)
 target_link_libraries(generate_turning_radii_benchmarks ${EXTRA_LIB})
 
-#add_executable(test_mrpt src/test_mrpt.cpp)
-#target_link_libraries(test_mrpt ${EXTRA_LIB})
-
-
