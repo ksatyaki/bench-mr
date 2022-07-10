@@ -14,8 +14,8 @@ mpb.set_planners(['rrt_star'])
 mpb.set_steer_functions(['car'])
 mpb["steer.car_turning_radius"] = 1.0
 mpb["steer.sampling_resolution"] = 0.01
-mpb["max_planning_time"] = 30
-mpb["ompl.geometric_planner_settings.RRTstar.delay_collision_checking"] = "1"
+mpb["max_planning_time"] = 8
+mpb["ompl.geometric_planner_settings.RRTstar.delay_collision_checking"] = "0"
 mpb["ompl.geometric_planner_settings.RRTstar.goal_bias"] = "0.05"
 mpb["ompl.geometric_planner_settings.RRTstar.informed_sampling"] = "1"
 
@@ -44,7 +44,7 @@ for cost_fn in cost_fns:
     intensity_mpb = deepcopy(mpb)
     intensity_mpb["ompl.sampler"] = "intensity"
     intensity_mpb.set_id('{}-{}'.format(cost_fn, 'intensity'))
-    intensity_mpb["mod.sampling_bias"] = 0.2
+    intensity_mpb["mod.sampling_bias"] = 1.0
     intensity_mpb["ompl.intensity_map_file_name"] = intensity_map_file
     intensity_mpb["ompl.optimization_objective"] = cost_fn
     intensity_mpb["mod.mod_file_name"] = cost_fn_map[cost_fn]
@@ -62,7 +62,7 @@ for cost_fn in cost_fns:
 
     dijkstra_mpb = deepcopy(mpb)
     dijkstra_mpb["ompl.sampler"] = "dijkstra"
-    dijkstra_mpb["mod.dijkstra_cell_size"] = 0.1
+    dijkstra_mpb["mod.dijkstra_cell_size"] = 0.5
     dijkstra_mpb["mod.sampling_bias"] = 0.05
     dijkstra_mpb.set_id('{}-{}'.format(cost_fn, 'dijkstra'))
     dijkstra_mpb["ompl.intensity_map_file_name"] = intensity_map_file
