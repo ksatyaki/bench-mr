@@ -23,7 +23,9 @@ if __name__ == '__main__':
     with open(args.setup_yaml_file) as f:
         setup = yaml.load(f, SafeLoader)
 
-    tqdm.write("Successfully read the yaml file containing {} start-goal pairs.", len(setup['sg']))
+    print("***************************************************************")
+    print("Successfully read the yaml file containing {} start-goal pairs.", len(setup['sg']))
+    print("***************************************************************")
 
     # Basic Setup
     mpb = MPB()
@@ -54,12 +56,13 @@ if __name__ == '__main__':
     mpb.set_start(-5.0, -5.0, math.pi / 4.0)
     mpb.set_goal(19.0, 19.0, math.pi / 4.0)
 
-    mpbs = dict()
-    result_file_names = []
     for sgs in setup['sg']:
-        mpb.set_start(sgs["start"])
-        mpb.set_goal(sgs["goal"])
-        results_folder_prefix = folder_prefix + (sgs["name"])
+        mpbs = dict()
+        result_file_names = []
+
+        mpb.set_start(sgs["start"][0],sgs["start"][1],sgs["start"][2])
+        mpb.set_goal(sgs["goal"][0],sgs["goal"][1],sgs["goal"][2])
+        results_folder_prefix = sgs["name"]
 
         for cost_fn in cost_fns:
             intensity_mpb = deepcopy(mpb)
@@ -101,7 +104,7 @@ if __name__ == '__main__':
             mpbs['{}-{}-{}'.format(sgs["name"], cost_fn, 'uniform')] = uniform_mpb
             result_file_names.append("{}/{}-{}_results.json".format(results_folder_prefix, cost_fn, 'uniform'))
 
-    for key in mpbs:
-        mpbs[key].run(id=key, runs=20, subfolder=folder_prefix + "/python/{}".format(results_folder_prefix))
+        for key in mpbs:
+            mpbs[key].run(id=key, runs=20, subfolder=folder_prefix + "/python/{}".format(results_folder_prefix))
 
 
