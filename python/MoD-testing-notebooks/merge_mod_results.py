@@ -1,6 +1,7 @@
 from mpb import MPB
 
 import argparse
+import glob
 
 parser = argparse.ArgumentParser(
     description="Merge results files from the MPBs by specifying cost function and sampling function")
@@ -20,7 +21,7 @@ for folder in args.folder:
     planners = []
     for cost_fn in args.cost_fn:
         for sampling_fn in args.sampling_fn:
-            files.append("{}/{}-{}_results.json".format(folder, cost_fn, sampling_fn))
+            files.append(glob.glob("{}/*{}-{}_results.json".format(folder, cost_fn, sampling_fn))[0])
             planners.append("{}-{}".format(cost_fn, sampling_fn))
     print("Running merge with files={}, target_filename={}/{}-combined.json, plan_names={}".format(files, folder,
                                                                                                    folder[folder.rfind(
