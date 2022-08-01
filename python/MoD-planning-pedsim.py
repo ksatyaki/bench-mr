@@ -72,7 +72,8 @@ for cost_fn in cost_fns:
     result_file_names.append("{}/{}-{}_results.json".format(results_folder_prefix, cost_fn, 'dijkstra'))
 
     uniform_mpb = deepcopy(mpb)
-    uniform_mpb["ompl.sampler"] = "iid"
+    uniform_mpb["ompl.sampler"] = ""
+    uniform_mpb["ompl.geometric_planner_settings.RRTstar.informed_sampling"] = "0"
     uniform_mpb.set_id('{}-{}'.format(cost_fn, 'uniform'))
     uniform_mpb["ompl.intensity_map_file_name"] = intensity_map_file
     uniform_mpb["ompl.optimization_objective"] = cost_fn
