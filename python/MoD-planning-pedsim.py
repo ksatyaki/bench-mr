@@ -29,18 +29,38 @@ gmmt_map_file = folder_prefix + "maps/office_cubicles_gmmtmap.xml"
 cost_fns = ["cliff", "intensity", "dtc", "gmmt"]
 cost_fn_map = {"dtc": cliff_map_file, "cliff": cliff_map_file, "intensity": intensity_map_file, "gmmt": gmmt_map_file}
 
-mpb["mod.weight_dtc"] = 0.05
-mpb["mod.weight_cliff"] = 0.25
-mpb["mod.weight_gmmt"] = 0.25
-mpb["mod.weight_intensity"] = 0.50
+mpb["mod.weight_dtc"] = 0.2
+mpb["mod.weight_cliff"] = 1.0
+mpb["mod.weight_gmmt"] = 1.0
+mpb["mod.weight_intensity"] = 2.0
 mpb.set_start(-5.0, -5.0, math.pi / 4.0)
 mpb.set_goal(19.0, 19.0, math.pi / 4.0)
 
-results_folder_prefix = "mod-tests-1"
+results_folder_prefix = "mod-tests-2"
 
 mpbs = dict()
 result_file_names = []
 for cost_fn in cost_fns:
+    uniform_mpb = deepcopy(mpb)
+    uniform_mpb["ompl.sampler"] = ""
+    uniform_mpb["ompl.geometric_planner_settings.RRTstar.informed_sampling"] = "0"
+    uniform_mpb.set_id('{}-{}'.format(cost_fn, 'uniform'))
+    uniform_mpb["ompl.intensity_map_file_name"] = intensity_map_file
+    uniform_mpb["ompl.optimization_objective"] = cost_fn
+    uniform_mpb["mod.mod_file_name"] = cost_fn_map[cost_fn]
+    mpbs['{}-{}'.format(cost_fn, 'uniform')] = uniform_mpb
+    result_file_names.append("{}/{}-{}_results.json".format(results_folder_prefix, cost_fn, 'uniform'))
+    
+    ellipse_mpb = deepcopy(mpb)
+    ellipse_mpb["ompl.sampler"] = "ellipse"
+    ellipse_mpb.set_id('{}-{}'.format(cost_fn, 'ellipse'))
+    ellipse_mpb["ompl.intensity_map_file_name"] = intensity_map_file
+    ellipse_mpb["ompl.optimization_objective"] = cost_fn
+    ellipse_mpb["mod.mod_file_name"] = cost_fn_map[cost_fn]
+    ellipse_mpb.set_planners(['informed_rrt_star'])
+    mpbs['{}-{}'.format(cost_fn, 'ellipse')] = ellipse_mpb
+    result_file_names.append("{}/{}-{}_results.json".format(results_folder_prefix, cost_fn, 'ellipse'))
+
     intensity_mpb = deepcopy(mpb)
     intensity_mpb["ompl.sampler"] = "intensity"
     intensity_mpb.set_id('{}-{}'.format(cost_fn, 'intensity'))
@@ -51,18 +71,9 @@ for cost_fn in cost_fns:
     mpbs['{}-{}'.format(cost_fn, 'intensity')] = intensity_mpb
     result_file_names.append("{}/{}-{}_results.json".format(results_folder_prefix, cost_fn, 'intensity'))
 
-    ellipse_mpb = deepcopy(mpb)
-    ellipse_mpb.set_id('{}-{}'.format(cost_fn, 'ellipse'))
-    ellipse_mpb["ompl.intensity_map_file_name"] = intensity_map_file
-    ellipse_mpb["ompl.optimization_objective"] = cost_fn
-    ellipse_mpb["mod.mod_file_name"] = cost_fn_map[cost_fn]
-    ellipse_mpb.set_planners(['informed_rrt_star'])
-    mpbs['{}-{}'.format(cost_fn, 'ellipse')] = ellipse_mpb
-    result_file_names.append("{}/{}-{}_results.json".format(results_folder_prefix, cost_fn, 'ellipse'))
-
     dijkstra_mpb = deepcopy(mpb)
     dijkstra_mpb["ompl.sampler"] = "dijkstra"
-    dijkstra_mpb["mod.dijkstra_cell_size"] = 0.2
+    dijkstra_mpb["mod.dijkstra_cell_size"] = 0.1
     dijkstra_mpb["mod.sampling_bias"] = 0.1
     dijkstra_mpb.set_id('{}-{}'.format(cost_fn, 'dijkstra'))
     dijkstra_mpb["ompl.intensity_map_file_name"] = intensity_map_file
@@ -70,16 +81,6 @@ for cost_fn in cost_fns:
     dijkstra_mpb["mod.mod_file_name"] = cost_fn_map[cost_fn]
     mpbs['{}-{}'.format(cost_fn, 'dijkstra')] = dijkstra_mpb
     result_file_names.append("{}/{}-{}_results.json".format(results_folder_prefix, cost_fn, 'dijkstra'))
-
-    uniform_mpb = deepcopy(mpb)
-    uniform_mpb["ompl.sampler"] = ""
-    uniform_mpb["ompl.geometric_planner_settings.RRTstar.informed_sampling"] = "0"
-    uniform_mpb.set_id('{}-{}'.format(cost_fn, 'uniform'))
-    uniform_mpb["ompl.intensity_map_file_name"] = intensity_map_file
-    uniform_mpb["ompl.optimization_objective"] = cost_fn
-    uniform_mpb["mod.mod_file_name"] = cost_fn_map[cost_fn]
-    mpbs['{}-{}'.format(cost_fn, 'uniform')] = uniform_mpb
-    result_file_names.append("{}/{}-{}_results.json".format(results_folder_prefix, cost_fn, 'uniform'))
 
 for key in mpbs:
     mpbs[key].run(id=key, runs=20, subfolder=folder_prefix + "/python/{}".format(results_folder_prefix))
