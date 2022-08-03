@@ -14,6 +14,7 @@ MRPTGridMap::MRPTGridMap(const std::string& yaml_file_name) {
   auto resolution = map_yaml_node["resolution"].as<float>();
   auto full_image_path =
       folder + "/" + map_yaml_node["image"].as<std::string>();
+  printf("Image file for MRPTGridMap Environment is %s", full_image_path);
   if (this->mrpt_map_->loadFromBitmapFile(
           full_image_path, resolution,
           mrpt::math::TPoint2D(-origin_x / resolution,

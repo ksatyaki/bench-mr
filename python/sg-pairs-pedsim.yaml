@@ -1,0 +1,15 @@
+repeats: 20
+sg:
+  - goal: [-5.0, -5.0, 0.78539816339]
+    start: [21.471, -17.647, 0.78539816339]
+    name: office_cubicles
+cost_fns:
+  - "gmmt"
+  - "cliff"
+  - "dtc"
+  - "intensity"
+cliff_map_file: "maps/office_cubicles_cliffmap.xml"
+gmmt_map_file: "maps/office_cubicles_gmmtmap.xml"
+intensity_map_file: "maps/office_cubicles_intensitymap.xml"
+occmap_file: "maps/office_cubicles.yaml"
+max_planning_time: 64
