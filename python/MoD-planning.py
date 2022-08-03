@@ -73,8 +73,7 @@ if __name__ == '__main__':
             print("Folder {} exists, not creating...".format(results_folder_prefix))
 
         for cost_fn in cost_fns:
-            
-            print("Running {}-{}-{}".format(sgs["name"], cost_fn, 'uniform'))
+
             uniform_mpb = deepcopy(mpb)
             uniform_mpb.set_planners(['rrt_star'])
             uniform_mpb["ompl.sampler"] = ""
@@ -85,7 +84,6 @@ if __name__ == '__main__':
             mpbs['{}-{}-{}'.format(sgs["name"], cost_fn, 'uniform')] = uniform_mpb
             result_file_names.append("{}/{}-{}_results.json".format(results_folder_prefix, cost_fn, 'uniform'))
 
-            print("Running {}-{}-{}".format(sgs["name"], cost_fn, 'ellipse'))
             ellipse_mpb = deepcopy(mpb)
             uniform_mpb["ompl.sampler"] = "ellipse"
             ellipse_mpb.set_id('{}-{}'.format(cost_fn, 'ellipse'))
@@ -95,7 +93,6 @@ if __name__ == '__main__':
             mpbs['{}-{}-{}'.format(sgs["name"], cost_fn, 'ellipse')] = ellipse_mpb
             result_file_names.append("{}/{}-{}_results.json".format(results_folder_prefix, cost_fn, 'ellipse'))
 
-            print("Running {}-{}-{}".format(sgs["name"], cost_fn, 'intensity'))
             intensity_mpb = deepcopy(mpb)
             intensity_mpb["ompl.sampler"] = "intensity"
             intensity_mpb.set_id('{}-{}'.format(cost_fn, 'intensity'))
@@ -106,7 +103,6 @@ if __name__ == '__main__':
             mpbs['{}-{}-{}'.format(sgs["name"], cost_fn, 'intensity')] = intensity_mpb
             result_file_names.append("{}/{}-{}_results.json".format(results_folder_prefix, cost_fn, 'intensity'))
 
-            print("Running {}-{}-{}".format(sgs["name"], cost_fn, 'dijkstra'))
             dijkstra_mpb = deepcopy(mpb)
             dijkstra_mpb["ompl.sampler"] = "dijkstra"
             dijkstra_mpb["mod.dijkstra_cell_size"] = 0.25
@@ -119,6 +115,7 @@ if __name__ == '__main__':
             result_file_names.append("{}/{}-{}_results.json".format(results_folder_prefix, cost_fn, 'dijkstra'))
 
         for key in mpbs:
+            print("Running {}".format(key))
             mpbs[key].run(id=key, runs=int(setup['repeats']), subfolder=os.getcwd() + "/" + results_folder_prefix)
 
         MPB.merge(result_file_names, target_filename="{}/combined.json".format(results_folder_prefix), plan_names=list(mpbs.keys()))
