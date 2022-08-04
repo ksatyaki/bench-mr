@@ -5,9 +5,9 @@ import glob
 
 parser = argparse.ArgumentParser(
     description="Merge results files from the MPBs by specifying cost function and sampling function")
-parser.add_argument("--cost-fn", nargs="*", type=str, help="A list of cost functions (space separated).")
-parser.add_argument("--sampling-fn", nargs="*", type=str, help="A list of sampling functions (space separated).")
-parser.add_argument("--folder", nargs="*", type=str,
+parser.add_argument("-c", "--cost-fn", nargs="*", type=str, help="A list of cost functions (space separated).")
+parser.add_argument("-s", "--sampling-fn", nargs="*", type=str, help="A list of sampling functions (space separated).")
+parser.add_argument("-f", "--folder", nargs="*", type=str,
                     help="The folder(s) where the source and destination result files are stored.")
 args = parser.parse_args()
 

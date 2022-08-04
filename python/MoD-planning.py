@@ -19,8 +19,11 @@ if __name__ == '__main__':
                         help="Yaml file for the ",
                         metavar="DATAFILE"
                         )
+    parser.add_argument("-s", "--sampling-fns", nargs="*", type=str, help="A list of sampling functions (space separated).")
     args = parser.parse_args()
 
+    sampling_functions = args.s if len(args.s) > 0 else ["uniform", "ellipse", "intensity", "dijkstra"]
+    print("Running these sampling functions: " + sampling_functions)
     with open(args.setup_yaml_file) as f:
         setup = yaml.load(f, SafeLoader)
 
@@ -74,51 +77,53 @@ if __name__ == '__main__':
 
         for cost_fn in cost_fns:
 
-            uniform_mpb = deepcopy(mpb)
-            uniform_mpb.set_planners(['rrt_star'])
-            uniform_mpb["ompl.sampler"] = ""
-            uniform_mpb.set_id('{}-{}'.format(cost_fn, 'uniform'))
-            uniform_mpb["ompl.intensity_map_file_name"] = intensity_map_file
-            uniform_mpb["ompl.optimization_objective"] = cost_fn
-            uniform_mpb["mod.mod_file_name"] = cost_fn_map[cost_fn]
-            mpbs['{}-{}-{}'.format(sgs["name"], cost_fn, 'uniform')] = uniform_mpb
-            result_file_names.append("{}/{}-{}_results.json".format(results_folder_prefix, cost_fn, 'uniform'))
+            if "uniform" in sampling_functions:
+                uniform_mpb = deepcopy(mpb)
+                uniform_mpb.set_planners(['rrt_star'])
+                uniform_mpb["ompl.sampler"] = ""
+                uniform_mpb.set_id('{}-{}'.format(cost_fn, 'uniform'))
+                uniform_mpb["ompl.intensity_map_file_name"] = intensity_map_file
+                uniform_mpb["ompl.optimization_objective"] = cost_fn
+                uniform_mpb["mod.mod_file_name"] = cost_fn_map[cost_fn]
+                mpbs['{}-{}-{}'.format(sgs["name"], cost_fn, 'uniform')] = uniform_mpb
+                result_file_names.append("{}/{}-{}_results.json".format(results_folder_prefix, cost_fn, 'uniform'))
 
-            ellipse_mpb = deepcopy(mpb)
-            uniform_mpb["ompl.sampler"] = "ellipse"
-            ellipse_mpb.set_id('{}-{}'.format(cost_fn, 'ellipse'))
-            ellipse_mpb["ompl.intensity_map_file_name"] = intensity_map_file
-            ellipse_mpb["ompl.optimization_objective"] = cost_fn
-            ellipse_mpb["mod.mod_file_name"] = cost_fn_map[cost_fn]
-            mpbs['{}-{}-{}'.format(sgs["name"], cost_fn, 'ellipse')] = ellipse_mpb
-            result_file_names.append("{}/{}-{}_results.json".format(results_folder_prefix, cost_fn, 'ellipse'))
+            if "ellipse" in sampling_functions:
+                ellipse_mpb = deepcopy(mpb)
+                ellipse_mpb["ompl.sampler"] = "ellipse"
+                ellipse_mpb.set_id('{}-{}'.format(cost_fn, 'ellipse'))
+                ellipse_mpb["ompl.intensity_map_file_name"] = intensity_map_file
+                ellipse_mpb["ompl.optimization_objective"] = cost_fn
+                ellipse_mpb["mod.mod_file_name"] = cost_fn_map[cost_fn]
+                mpbs['{}-{}-{}'.format(sgs["name"], cost_fn, 'ellipse')] = ellipse_mpb
+                result_file_names.append("{}/{}-{}_results.json".format(results_folder_prefix, cost_fn, 'ellipse'))
 
-            intensity_mpb = deepcopy(mpb)
-            intensity_mpb["ompl.sampler"] = "intensity"
-            intensity_mpb.set_id('{}-{}'.format(cost_fn, 'intensity'))
-            intensity_mpb["mod.sampling_bias"] = 0.5
-            intensity_mpb["ompl.intensity_map_file_name"] = intensity_map_file
-            intensity_mpb["ompl.optimization_objective"] = cost_fn
-            intensity_mpb["mod.mod_file_name"] = cost_fn_map[cost_fn]
-            mpbs['{}-{}-{}'.format(sgs["name"], cost_fn, 'intensity')] = intensity_mpb
-            result_file_names.append("{}/{}-{}_results.json".format(results_folder_prefix, cost_fn, 'intensity'))
+            if "intensity" in sampling_functions:
+                intensity_mpb = deepcopy(mpb)
+                intensity_mpb["ompl.sampler"] = "intensity"
+                intensity_mpb.set_id('{}-{}'.format(cost_fn, 'intensity'))
+                intensity_mpb["mod.sampling_bias"] = 0.5
+                intensity_mpb["ompl.intensity_map_file_name"] = intensity_map_file
+                intensity_mpb["ompl.optimization_objective"] = cost_fn
+                intensity_mpb["mod.mod_file_name"] = cost_fn_map[cost_fn]
+                mpbs['{}-{}-{}'.format(sgs["name"], cost_fn, 'intensity')] = intensity_mpb
+                result_file_names.append("{}/{}-{}_results.json".format(results_folder_prefix, cost_fn, 'intensity'))
 
-            dijkstra_mpb = deepcopy(mpb)
-            dijkstra_mpb["ompl.sampler"] = "dijkstra"
-            dijkstra_mpb["mod.dijkstra_cell_size"] = 0.25
-            dijkstra_mpb["mod.sampling_bias"] = 0.05
-            dijkstra_mpb.set_id('{}-{}'.format(cost_fn, 'dijkstra'))
-            dijkstra_mpb["ompl.intensity_map_file_name"] = intensity_map_file
-            dijkstra_mpb["ompl.optimization_objective"] = cost_fn
-            dijkstra_mpb["mod.mod_file_name"] = cost_fn_map[cost_fn]
-            mpbs['{}-{}-{}'.format(sgs["name"], cost_fn, 'dijkstra')] = dijkstra_mpb
-            result_file_names.append("{}/{}-{}_results.json".format(results_folder_prefix, cost_fn, 'dijkstra'))
+            if "dijkstra" in sampling_functions:
+                dijkstra_mpb = deepcopy(mpb)
+                dijkstra_mpb["ompl.sampler"] = "dijkstra"
+                dijkstra_mpb["mod.dijkstra_cell_size"] = 0.25
+                dijkstra_mpb["mod.sampling_bias"] = 0.05
+                dijkstra_mpb.set_id('{}-{}'.format(cost_fn, 'dijkstra'))
+                dijkstra_mpb["ompl.intensity_map_file_name"] = intensity_map_file
+                dijkstra_mpb["ompl.optimization_objective"] = cost_fn
+                dijkstra_mpb["mod.mod_file_name"] = cost_fn_map[cost_fn]
+                mpbs['{}-{}-{}'.format(sgs["name"], cost_fn, 'dijkstra')] = dijkstra_mpb
+                result_file_names.append("{}/{}-{}_results.json".format(results_folder_prefix, cost_fn, 'dijkstra'))
 
         for key in mpbs:
             print("Running {}".format(key))
             mpbs[key].run(id=key, runs=int(setup['repeats']), subfolder=os.getcwd() + "/" + results_folder_prefix)
-
-        MPB.merge(result_file_names, target_filename="{}/combined.json".format(results_folder_prefix), plan_names=list(mpbs.keys()))
 
 
 
