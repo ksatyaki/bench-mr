@@ -42,6 +42,8 @@ if __name__ == '__main__':
     mpb["max_planning_time"] = 256
     mpb["ompl.geometric_planner_settings.RRTstar.delay_collision_checking"] = "0"
     mpb["ompl.geometric_planner_settings.RRTstar.goal_bias"] = "0.01"
+    mpb["ompl.geometric_planner_settings.InformedRRTstar.delay_collision_checking"] = "0"
+    mpb["ompl.geometric_planner_settings.InformedRRTstar.goal_bias"] = "0.01"
 
     mpb["env.collision.robot_shape_source"] = os.path.abspath(os.getcwd() + "/../maps/simple_robot.yaml")
     mpb.set_image_yaml_env(os.path.abspath(os.getcwd() + "/../" + setup["occmap_file"]))
