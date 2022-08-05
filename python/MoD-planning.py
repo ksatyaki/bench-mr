@@ -22,8 +22,9 @@ if __name__ == '__main__':
     parser.add_argument("-s", "--sampling-fns", nargs="*", type=str, help="A list of sampling functions (space separated).")
     args = parser.parse_args()
 
-    sampling_functions = args.s if len(args.s) > 0 else ["uniform", "ellipse", "intensity", "dijkstra"]
-    print("Running these sampling functions: " + sampling_functions)
+    sampling_functions = args.sampling_fns if len(args.sampling_fns) > 0 else ["uniform", "ellipse", "intensity", "dijkstra"]
+    print("Running these sampling functions: ")
+    print(sampling_functions)
     with open(args.setup_yaml_file) as f:
         setup = yaml.load(f, SafeLoader)
 
