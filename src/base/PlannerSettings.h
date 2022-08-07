@@ -491,7 +491,7 @@ struct GlobalSettings : public Group {
     Property<double> mahalanobis_distance_threshold{10.0, "mdt", this};
     Property<double> max_vs{1.0, "max_vs", this};
 
-    Property<double> dijkstra_cell_size {0.5, "dijkstra_cell_size", this};
+    Property<double> dijkstra_cell_size {0.20, "dijkstra_cell_size", this};
     Property<double> sampling_bias {0.1, "sampling_bias", this};
 
     Property<std::string> mod_file_name{"", "mod_file_name", this};

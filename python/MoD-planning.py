@@ -39,7 +39,7 @@ if __name__ == '__main__':
     mpb.set_steer_functions(['car'])
     mpb["steer.car_turning_radius"] = 1.0
     mpb["steer.sampling_resolution"] = 0.01
-    mpb["max_planning_time"] = 256
+    mpb["max_planning_time"] = float(setup["max_planning_time"])
     mpb["ompl.geometric_planner_settings.RRTstar.delay_collision_checking"] = "0"
     mpb["ompl.geometric_planner_settings.RRTstar.goal_bias"] = "0.01"
     mpb["ompl.geometric_planner_settings.InformedRRTstar.delay_collision_checking"] = "0"
@@ -50,7 +50,6 @@ if __name__ == '__main__':
     cliff_map_file = os.path.abspath(os.getcwd() + "/../" + setup["cliff_map_file"])
     intensity_map_file = os.path.abspath(os.getcwd() + "/../" + setup["intensity_map_file"])
     gmmt_map_file = os.path.abspath(os.getcwd() + "/../" + setup["gmmt_map_file"])
-    mpb["max_planning_time"] = 64
 
     cost_fns = setup["cost_fns"]
     cost_fn_map = {"dtc": cliff_map_file, "cliff": cliff_map_file, "intensity": intensity_map_file,
@@ -79,6 +78,18 @@ if __name__ == '__main__':
             print("Folder {} exists, not creating...".format(results_folder_prefix))
 
         for cost_fn in cost_fns:
+
+            if "dijkstra" in sampling_functions:
+                dijkstra_mpb = deepcopy(mpb)
+                dijkstra_mpb["ompl.sampler"] = "dijkstra"
+                dijkstra_mpb["mod.dijkstra_cell_size"] = 0.1
+                dijkstra_mpb["mod.sampling_bias"] = 0.05
+                dijkstra_mpb.set_id('{}-{}'.format(cost_fn, 'dijkstra'))
+                dijkstra_mpb["ompl.intensity_map_file_name"] = intensity_map_file
+                dijkstra_mpb["ompl.optimization_objective"] = cost_fn
+                dijkstra_mpb["mod.mod_file_name"] = cost_fn_map[cost_fn]
+                mpbs['{}-{}-{}'.format(sgs["name"], cost_fn, 'dijkstra')] = dijkstra_mpb
+                result_file_names.append("{}/{}-{}_results.json".format(results_folder_prefix, cost_fn, 'dijkstra'))
 
             if "uniform" in sampling_functions:
                 uniform_mpb = deepcopy(mpb)
@@ -111,18 +122,6 @@ if __name__ == '__main__':
                 intensity_mpb["mod.mod_file_name"] = cost_fn_map[cost_fn]
                 mpbs['{}-{}-{}'.format(sgs["name"], cost_fn, 'intensity')] = intensity_mpb
                 result_file_names.append("{}/{}-{}_results.json".format(results_folder_prefix, cost_fn, 'intensity'))
-
-            if "dijkstra" in sampling_functions:
-                dijkstra_mpb = deepcopy(mpb)
-                dijkstra_mpb["ompl.sampler"] = "dijkstra"
-                dijkstra_mpb["mod.dijkstra_cell_size"] = 0.25
-                dijkstra_mpb["mod.sampling_bias"] = 0.05
-                dijkstra_mpb.set_id('{}-{}'.format(cost_fn, 'dijkstra'))
-                dijkstra_mpb["ompl.intensity_map_file_name"] = intensity_map_file
-                dijkstra_mpb["ompl.optimization_objective"] = cost_fn
-                dijkstra_mpb["mod.mod_file_name"] = cost_fn_map[cost_fn]
-                mpbs['{}-{}-{}'.format(sgs["name"], cost_fn, 'dijkstra')] = dijkstra_mpb
-                result_file_names.append("{}/{}-{}_results.json".format(results_folder_prefix, cost_fn, 'dijkstra'))
 
         for key in mpbs:
             print("Running {}".format(key))
