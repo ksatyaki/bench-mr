@@ -82,7 +82,7 @@ if __name__ == '__main__':
             if "dijkstra" in sampling_functions:
                 dijkstra_mpb = deepcopy(mpb)
                 dijkstra_mpb["ompl.sampler"] = "dijkstra"
-                dijkstra_mpb["mod.dijkstra_cell_size"] = 0.1
+                dijkstra_mpb["mod.dijkstra_cell_size"] = 0.25
                 dijkstra_mpb["mod.sampling_bias"] = 0.05
                 dijkstra_mpb.set_id('{}-{}'.format(cost_fn, 'dijkstra'))
                 dijkstra_mpb["ompl.intensity_map_file_name"] = intensity_map_file
