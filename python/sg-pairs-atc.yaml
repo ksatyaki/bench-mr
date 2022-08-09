@@ -1,5 +1,8 @@
 repeats: 20
 sg:
+  - start: [47.690, -18.848, -2.356]
+    goal: [-19.575, 12.390, 2.313]
+    name: scenario1
   - goal: [-3.85, -6.82, -0.8203]
     start: [21.471, -17.647, 0.733]
     name: scenario2
