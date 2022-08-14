@@ -44,7 +44,7 @@ double MRPTGridMap::distance(double x, double y) {
 bool MRPTGridMap::collides(double x, double y) {
   // For some reason the values are (1 - <>) in the MRPT map
   // return (1.0 - mrpt_map_->getPos(x, y)) > this->_threshold;
-  return mrpt_map_->computeClearance(x, y, 0.3) < 0.3;
+  return mrpt_map_->computeClearance(x, y, 0.1) < 0.1;
 }
 
 bool MRPTGridMap::collides(const Polygon& polygon) {
