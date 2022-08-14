@@ -1,0 +1,8 @@
+name: "mpb"
+type: "cmake"
+dependencies:
+ - "mod"
+ - "mrpt2-devel"
+ - "ompl-devel"
+ - "eigen3-devel"
+ - "boost-devel"
