@@ -1,4 +1,4 @@
-repeats: 20
+repeats: 5
 sg:
   - start: [-5.0, -5.0, 0.78539816339]
     goal: [19.0, 19.0, 0.78539816339]
@@ -12,4 +12,4 @@ cliff_map_file: "maps/office_cubicles_cliffmap.xml"
 gmmt_map_file: "maps/office_cubicles_gmmtmap.xml"
 intensity_map_file: "maps/office_cubicles_intensitymap.xml"
 occmap_file: "maps/office_cubicles.yaml"
-max_planning_time: 64
+max_planning_time: 8
