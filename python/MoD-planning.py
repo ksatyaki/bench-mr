@@ -41,9 +41,9 @@ if __name__ == '__main__':
     mpb["steer.sampling_resolution"] = 0.01
     mpb["max_planning_time"] = float(setup["max_planning_time"])
     mpb["ompl.geometric_planner_settings.RRTstar.delay_collision_checking"] = "0"
-    mpb["ompl.geometric_planner_settings.RRTstar.goal_bias"] = "0.01"
+    mpb["ompl.geometric_planner_settings.RRTstar.goal_bias"] = "0.005"
     mpb["ompl.geometric_planner_settings.InformedRRTstar.delay_collision_checking"] = "0"
-    mpb["ompl.geometric_planner_settings.InformedRRTstar.goal_bias"] = "0.01"
+    mpb["ompl.geometric_planner_settings.InformedRRTstar.goal_bias"] = "0.005"
 
     mpb["env.collision.robot_shape_source"] = os.path.abspath(os.getcwd() + "/../maps/simple_robot.yaml")
     mpb.set_image_yaml_env(os.path.abspath(os.getcwd() + "/../" + setup["occmap_file"]))
@@ -55,10 +55,10 @@ if __name__ == '__main__':
     cost_fn_map = {"dtc": cliff_map_file, "cliff": cliff_map_file, "intensity": intensity_map_file,
                    "gmmt": gmmt_map_file}
 
-    mpb["mod.weight_dtc"] = 0.2
-    mpb["mod.weight_cliff"] = 1.0
-    mpb["mod.weight_gmmt"] = 1.0
-    mpb["mod.weight_intensity"] = 2.0
+    mpb["mod.weight_dtc"] = 0.02
+    mpb["mod.weight_cliff"] = 0.1
+    mpb["mod.weight_gmmt"] = 0.1
+    mpb["mod.weight_intensity"] = 0.2
 
     for sgs in setup['sg']:
         print("****************************************")
@@ -82,7 +82,7 @@ if __name__ == '__main__':
             if "dijkstra" in sampling_functions:
                 dijkstra_mpb = deepcopy(mpb)
                 dijkstra_mpb["ompl.sampler"] = "dijkstra"
-                dijkstra_mpb["mod.dijkstra_cell_size"] = 0.25
+                dijkstra_mpb["mod.dijkstra_cell_size"] = 1.0
                 dijkstra_mpb["mod.sampling_bias"] = 0.05
                 dijkstra_mpb.set_id('{}-{}'.format(cost_fn, 'dijkstra'))
                 dijkstra_mpb["ompl.intensity_map_file_name"] = intensity_map_file
@@ -116,7 +116,7 @@ if __name__ == '__main__':
                 intensity_mpb = deepcopy(mpb)
                 intensity_mpb["ompl.sampler"] = "intensity"
                 intensity_mpb.set_id('{}-{}'.format(cost_fn, 'intensity'))
-                intensity_mpb["mod.sampling_bias"] = 0.5
+                intensity_mpb["mod.sampling_bias"] = 0.1
                 intensity_mpb["ompl.intensity_map_file_name"] = intensity_map_file
                 intensity_mpb["ompl.optimization_objective"] = cost_fn
                 intensity_mpb["mod.mod_file_name"] = cost_fn_map[cost_fn]

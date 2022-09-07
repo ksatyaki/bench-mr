@@ -2,16 +2,16 @@ repeats: 20
 sg:
   - start: [-5.0, -5.0, 0.78539816339]
     goal: [19.0, 19.0, 0.78539816339]
-    name: office_cubicles1
+    name: office_cubicles1a
   - start: [-5.0, 19.0, 0.78539816339]
     goal: [19.0, -5.0, 0.78539816339]
-    name: office_cubicles2
+    name: office_cubicles2a
   - start: [19.0, 19.0, 0.78539816339]
     goal: [-5.0, -5.0, 0.78539816339]
-    name: office_cubicles2
+    name: office_cubicles3a
   - start: [19.0, -5.0, 0.78539816339]
     goal: [-5.0, 19.0, 0.78539816339]
-    name: office_cubicles2
+    name: office_cubicles4a
 cost_fns:
   - "gmmt"
   - "cliff"
@@ -21,4 +21,4 @@ cliff_map_file: "maps/office_cubicles_cliffmap.xml"
 gmmt_map_file: "maps/office_cubicles_gmmtmap.xml"
 intensity_map_file: "maps/office_cubicles_intensitymap.xml"
 occmap_file: "maps/office_cubicles.yaml"
-max_planning_time: 64
+max_planning_time: 32
