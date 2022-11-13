@@ -2,16 +2,16 @@ repeats: 20
 sg:
   - start: [47.690, -18.848, -2.356]
     goal: [-19.575, 12.390, 2.313]
-    name: scenario1
+    name: atc-scenario1
   - goal: [-3.85, -6.82, -0.8203]
     start: [21.471, -17.647, 0.733]
-    name: scenario2
+    name: atc-scenario2
   - start: [-0.133, -8.555, 2.604]
     goal: [31.093, -20.553, -1.999]
-    name: scenario3
+    name: atc-scenario3
   - start: [11.5, -5.0, 2.604]
     goal: [-25.00, 3.00, -1.999]
-    name: scenario4
+    name: atc-scenario4
 cost_fns:
   - "gmmt"
   - "cliff"
@@ -21,4 +21,4 @@ gmmt_map_file: "maps/atc_gmmt.xml"
 cliff_map_file: "maps/atc_cliff.xml"
 intensity_map_file: "maps/atc_intensity1m.xml"
 occmap_file: "maps/atc.yaml"
-max_planning_time: 512
+max_planning_time: 128

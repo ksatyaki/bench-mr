@@ -5,11 +5,9 @@ mpl.rcParams['mathtext.fontset'] = 'cm'
 mpl.rcParams['pdf.fonttype'] = 42
 
 from copy import deepcopy
-import math
 
 from argparse import ArgumentParser
 from yaml.loader import SafeLoader
-from tqdm import tqdm
 import os
 
 
@@ -83,7 +81,7 @@ if __name__ == '__main__':
                 dijkstra_mpb = deepcopy(mpb)
                 dijkstra_mpb["ompl.sampler"] = "dijkstra"
                 dijkstra_mpb["mod.dijkstra_cell_size"] = 1.0
-                dijkstra_mpb["mod.sampling_bias"] = 0.05
+                dijkstra_mpb["mod.sampling_bias"] = 0.2
                 dijkstra_mpb.set_id('{}-{}'.format(cost_fn, 'dijkstra'))
                 dijkstra_mpb["ompl.intensity_map_file_name"] = intensity_map_file
                 dijkstra_mpb["ompl.optimization_objective"] = cost_fn
