@@ -36,7 +36,7 @@ if __name__ == '__main__':
     mpb.set_planners(['informed_rrt_star'])
     mpb.set_steer_functions(['car'])
     mpb["steer.car_turning_radius"] = 1.0
-    mpb["steer.sampling_resolution"] = 0.01
+    mpb["steer.sampling_resolution"] = 0.001
     mpb["max_planning_time"] = float(setup["max_planning_time"])
     mpb["ompl.geometric_planner_settings.RRTstar.delay_collision_checking"] = "0"
     mpb["ompl.geometric_planner_settings.RRTstar.goal_bias"] = "0.005"
