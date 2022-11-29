@@ -30,6 +30,8 @@ if __name__ == '__main__':
     print("Successfully read the yaml file containing {} start-goal pairs.", len(setup['sg']))
     print("***************************************************************")
 
+    pool = MultipleMPB()
+
     # Basic Setup
     mpb = MPB()
     mpb["ompl.seed"] = -1  # set the seed of the OMPL planners
@@ -39,9 +41,9 @@ if __name__ == '__main__':
     mpb["steer.sampling_resolution"] = 0.001
     mpb["max_planning_time"] = float(setup["max_planning_time"])
     mpb["ompl.geometric_planner_settings.RRTstar.delay_collision_checking"] = "0"
-    mpb["ompl.geometric_planner_settings.RRTstar.goal_bias"] = "0.005"
+    mpb["ompl.geometric_planner_settings.RRTstar.goal_bias"] = "0.01"
     mpb["ompl.geometric_planner_settings.InformedRRTstar.delay_collision_checking"] = "0"
-    mpb["ompl.geometric_planner_settings.InformedRRTstar.goal_bias"] = "0.005"
+    mpb["ompl.geometric_planner_settings.InformedRRTstar.goal_bias"] = "0.01"
 
     mpb["env.collision.robot_shape_source"] = os.path.abspath(os.getcwd() + "/../maps/simple_robot.yaml")
     mpb.set_image_yaml_env(os.path.abspath(os.getcwd() + "/../" + setup["occmap_file"]))
@@ -133,10 +135,13 @@ if __name__ == '__main__':
                 mpbs['{}-{}-{}'.format(sgs["name"], cost_fn, 'hybrid')] = hybrid_mpb
                 result_file_names.append("{}/{}-{}_results.json".format(results_folder_prefix, cost_fn, 'hybrid'))
 
+        for mpb in mpbs.values():
+            pool.benchmarks.append(mpb)
 
-        for key in mpbs:
-            print("Running {}".format(key))
-            mpbs[key].run(id=key, runs=int(setup['repeats']), subfolder=os.getcwd() + "/" + results_folder_prefix)
+        # for key in mpbs:
+        #     print("Running {}".format(key))
+        #     mpbs[key].run(id=key, runs=int(setup['repeats']), subfolder=os.getcwd() + "/" + results_folder_prefix)
 
+        pool.run_parallel(runs=int(setup['repeats']), use_subfolder=True)
 
 
