@@ -142,7 +142,7 @@ if __name__ == '__main__':
         #     print("Running {}".format(key))
         #     mpbs[key].run(id=key, runs=int(setup['repeats']), subfolder=os.getcwd() + "/" + results_folder_prefix)
         ts = time.time()
-        name = results_folder_prefix + datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d_%H-%M-%S')
+        name = results_folder_prefix + "-" + datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d_%H-%M-%S')
         pool.run_parallel(id=name, runs=int(setup['repeats']), use_subfolder=True, processes=20)
 
 
