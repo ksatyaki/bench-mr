@@ -1,11 +1,11 @@
+from datetime import datetime, time
+
 import yaml
 from mpb import MPB, MultipleMPB
 import matplotlib as mpl
 mpl.rcParams['mathtext.fontset'] = 'cm'
 mpl.rcParams['pdf.fonttype'] = 42
-
 from copy import deepcopy
-
 from argparse import ArgumentParser
 from yaml.loader import SafeLoader
 import os
@@ -79,7 +79,7 @@ if __name__ == '__main__':
 
         for cost_fn in cost_fns:
 
-            if "dijkstra" in sampling_functions:
+            if "dijkstra" in sampling_functions or len(sampling_functions) == 0:
                 dijkstra_mpb = deepcopy(mpb)
                 dijkstra_mpb["ompl.sampler"] = "dijkstra"
                 dijkstra_mpb["mod.dijkstra_cell_size"] = 0.5
@@ -91,7 +91,7 @@ if __name__ == '__main__':
                 mpbs['{}-{}-{}'.format(sgs["name"], cost_fn, 'dijkstra')] = dijkstra_mpb
                 result_file_names.append("{}/{}-{}_results.json".format(results_folder_prefix, cost_fn, 'dijkstra'))
 
-            if "uniform" in sampling_functions:
+            if "uniform" in sampling_functions or len(sampling_functions) == 0:
                 uniform_mpb = deepcopy(mpb)
                 uniform_mpb.set_planners(['rrt_star'])
                 uniform_mpb["ompl.sampler"] = ""
@@ -102,7 +102,7 @@ if __name__ == '__main__':
                 mpbs['{}-{}-{}'.format(sgs["name"], cost_fn, 'uniform')] = uniform_mpb
                 result_file_names.append("{}/{}-{}_results.json".format(results_folder_prefix, cost_fn, 'uniform'))
 
-            if "ellipse" in sampling_functions:
+            if "ellipse" in sampling_functions or len(sampling_functions) == 0:
                 ellipse_mpb = deepcopy(mpb)
                 ellipse_mpb["ompl.sampler"] = "ellipse"
                 ellipse_mpb.set_id('{}-{}'.format(cost_fn, 'ellipse'))
@@ -112,7 +112,7 @@ if __name__ == '__main__':
                 mpbs['{}-{}-{}'.format(sgs["name"], cost_fn, 'ellipse')] = ellipse_mpb
                 result_file_names.append("{}/{}-{}_results.json".format(results_folder_prefix, cost_fn, 'ellipse'))
 
-            if "intensity" in sampling_functions:
+            if "intensity" in sampling_functions or len(sampling_functions) == 0:
                 intensity_mpb = deepcopy(mpb)
                 intensity_mpb["ompl.sampler"] = "intensity"
                 intensity_mpb.set_id('{}-{}'.format(cost_fn, 'intensity'))
@@ -123,7 +123,7 @@ if __name__ == '__main__':
                 mpbs['{}-{}-{}'.format(sgs["name"], cost_fn, 'intensity')] = intensity_mpb
                 result_file_names.append("{}/{}-{}_results.json".format(results_folder_prefix, cost_fn, 'intensity'))
 
-            if "hybrid" in sampling_functions:
+            if "hybrid" in sampling_functions or len(sampling_functions) == 0:
                 hybrid_mpb = deepcopy(mpb)
                 hybrid_mpb["ompl.sampler"] = "hybrid"
                 hybrid_mpb.set_id('{}-{}'.format(cost_fn, 'hybrid'))
@@ -141,7 +141,8 @@ if __name__ == '__main__':
         # for key in mpbs:
         #     print("Running {}".format(key))
         #     mpbs[key].run(id=key, runs=int(setup['repeats']), subfolder=os.getcwd() + "/" + results_folder_prefix)
-
-        pool.run_parallel(runs=int(setup['repeats']), use_subfolder=True)
+        ts = time.time()
+        name = results_folder_prefix + datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d_%H-%M-%S')
+        pool.run_parallel(runs=int(setup['repeats']), use_subfolder=True, processes=20)
 
 
