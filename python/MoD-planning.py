@@ -9,6 +9,8 @@ from copy import deepcopy
 from argparse import ArgumentParser
 from yaml.loader import SafeLoader
 import os
+import random
+import string
 
 
 if __name__ == '__main__':
@@ -135,7 +137,7 @@ if __name__ == '__main__':
         #     print("Running {}".format(key))
         #     mpbs[key].run(id=key, runs=int(setup['repeats']), subfolder=os.getcwd() + "/" + results_folder_prefix)
         ts = time.time()
-        name = results_folder_prefix + "-" + datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d_%H-%M-%S')
+        name = results_folder_prefix + "-" + datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d_%H-%M-%S') + ''.join(random.SystemRandom().choice(string.ascii_lowercase + string.digits) for _ in range(10))
         pool.run_parallel(id=name, runs=int(setup['repeats']), use_subfolder=True, processes=int(args.processes))
 
 
