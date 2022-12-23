@@ -70,11 +70,6 @@ if __name__ == '__main__':
         mpb.set_goal(sgs["goal"][0],sgs["goal"][1],sgs["goal"][2])
         results_folder_prefix = sgs["name"]
 
-        try:
-            os.mkdir(results_folder_prefix)
-        except FileExistsError as fxe:
-            print("Folder {} exists, not creating...".format(results_folder_prefix))
-
         for cost_fn in cost_fns:
 
             if "dijkstra" in sampling_functions or len(sampling_functions) == 0:
