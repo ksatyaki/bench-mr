@@ -13,10 +13,8 @@ import os
 
 if __name__ == '__main__':
     parser = ArgumentParser()
-    parser.add_argument("setup_yaml_file",
-                        help="Yaml file for the ",
-                        metavar="DATAFILE"
-                        )
+    parser.add_argument("setup_yaml_file", help="Yaml file for the ", metavar="DATAFILE")
+    parser.add_argument("processes", help="Number of parallel processes to run", metavar="PROCESSES")
     parser.add_argument("-s", "--sampling-fns", nargs="*", type=str, help="A list of sampling functions (space separated).")
     args = parser.parse_args()
 
@@ -143,6 +141,6 @@ if __name__ == '__main__':
         #     mpbs[key].run(id=key, runs=int(setup['repeats']), subfolder=os.getcwd() + "/" + results_folder_prefix)
         ts = time.time()
         name = results_folder_prefix + "-" + datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d_%H-%M-%S')
-        pool.run_parallel(id=name, runs=int(setup['repeats']), use_subfolder=True, processes=20)
+        pool.run_parallel(id=name, runs=int(setup['repeats']), use_subfolder=True, processes=int(args.processes))
 
 
