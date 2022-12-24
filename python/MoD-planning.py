@@ -1,26 +1,26 @@
+import datetime
+import time
 import yaml
 from mpb import MPB, MultipleMPB
 import matplotlib as mpl
 mpl.rcParams['mathtext.fontset'] = 'cm'
 mpl.rcParams['pdf.fonttype'] = 42
-
 from copy import deepcopy
-
 from argparse import ArgumentParser
 from yaml.loader import SafeLoader
 import os
+import random
+import string
 
 
 if __name__ == '__main__':
     parser = ArgumentParser()
-    parser.add_argument("setup_yaml_file",
-                        help="Yaml file for the ",
-                        metavar="DATAFILE"
-                        )
+    parser.add_argument("setup_yaml_file", help="Yaml file for the ", metavar="DATAFILE")
+    parser.add_argument("processes", help="Number of parallel processes to run", metavar="PROCESSES")
     parser.add_argument("-s", "--sampling-fns", nargs="*", type=str, help="A list of sampling functions (space separated).")
     args = parser.parse_args()
 
-    sampling_functions = args.sampling_fns if len(args.sampling_fns) > 0 else ["uniform", "ellipse", "intensity", "dijkstra"]
+    sampling_functions = args.sampling_fns if args.sampling_fns else []
     print("Running these sampling functions: ")
     print(sampling_functions)
     with open(args.setup_yaml_file) as f:
@@ -29,6 +29,8 @@ if __name__ == '__main__':
     print("***************************************************************")
     print("Successfully read the yaml file containing {} start-goal pairs.", len(setup['sg']))
     print("***************************************************************")
+
+    pool = MultipleMPB()
 
     # Basic Setup
     mpb = MPB()
@@ -39,9 +41,9 @@ if __name__ == '__main__':
     mpb["steer.sampling_resolution"] = 0.001
     mpb["max_planning_time"] = float(setup["max_planning_time"])
     mpb["ompl.geometric_planner_settings.RRTstar.delay_collision_checking"] = "0"
-    mpb["ompl.geometric_planner_settings.RRTstar.goal_bias"] = "0.005"
+    mpb["ompl.geometric_planner_settings.RRTstar.goal_bias"] = "0.01"
     mpb["ompl.geometric_planner_settings.InformedRRTstar.delay_collision_checking"] = "0"
-    mpb["ompl.geometric_planner_settings.InformedRRTstar.goal_bias"] = "0.005"
+    mpb["ompl.geometric_planner_settings.InformedRRTstar.goal_bias"] = "0.01"
 
     mpb["env.collision.robot_shape_source"] = os.path.abspath(os.getcwd() + "/../maps/simple_robot.yaml")
     mpb.set_image_yaml_env(os.path.abspath(os.getcwd() + "/../" + setup["occmap_file"]))
@@ -70,14 +72,9 @@ if __name__ == '__main__':
         mpb.set_goal(sgs["goal"][0],sgs["goal"][1],sgs["goal"][2])
         results_folder_prefix = sgs["name"]
 
-        try:
-            os.mkdir(results_folder_prefix)
-        except FileExistsError as fxe:
-            print("Folder {} exists, not creating...".format(results_folder_prefix))
-
         for cost_fn in cost_fns:
 
-            if "dijkstra" in sampling_functions:
+            if "dijkstra" in sampling_functions or len(sampling_functions) == 0:
                 dijkstra_mpb = deepcopy(mpb)
                 dijkstra_mpb["ompl.sampler"] = "dijkstra"
                 dijkstra_mpb["mod.dijkstra_cell_size"] = 0.5
@@ -89,7 +86,7 @@ if __name__ == '__main__':
                 mpbs['{}-{}-{}'.format(sgs["name"], cost_fn, 'dijkstra')] = dijkstra_mpb
                 result_file_names.append("{}/{}-{}_results.json".format(results_folder_prefix, cost_fn, 'dijkstra'))
 
-            if "uniform" in sampling_functions:
+            if "uniform" in sampling_functions or len(sampling_functions) == 0:
                 uniform_mpb = deepcopy(mpb)
                 uniform_mpb.set_planners(['rrt_star'])
                 uniform_mpb["ompl.sampler"] = ""
@@ -100,7 +97,7 @@ if __name__ == '__main__':
                 mpbs['{}-{}-{}'.format(sgs["name"], cost_fn, 'uniform')] = uniform_mpb
                 result_file_names.append("{}/{}-{}_results.json".format(results_folder_prefix, cost_fn, 'uniform'))
 
-            if "ellipse" in sampling_functions:
+            if "ellipse" in sampling_functions or len(sampling_functions) == 0:
                 ellipse_mpb = deepcopy(mpb)
                 ellipse_mpb["ompl.sampler"] = "ellipse"
                 ellipse_mpb.set_id('{}-{}'.format(cost_fn, 'ellipse'))
@@ -110,7 +107,7 @@ if __name__ == '__main__':
                 mpbs['{}-{}-{}'.format(sgs["name"], cost_fn, 'ellipse')] = ellipse_mpb
                 result_file_names.append("{}/{}-{}_results.json".format(results_folder_prefix, cost_fn, 'ellipse'))
 
-            if "intensity" in sampling_functions:
+            if "intensity" in sampling_functions or len(sampling_functions) == 0:
                 intensity_mpb = deepcopy(mpb)
                 intensity_mpb["ompl.sampler"] = "intensity"
                 intensity_mpb.set_id('{}-{}'.format(cost_fn, 'intensity'))
@@ -121,7 +118,7 @@ if __name__ == '__main__':
                 mpbs['{}-{}-{}'.format(sgs["name"], cost_fn, 'intensity')] = intensity_mpb
                 result_file_names.append("{}/{}-{}_results.json".format(results_folder_prefix, cost_fn, 'intensity'))
 
-            if "hybrid" in sampling_functions:
+            if "hybrid" in sampling_functions or len(sampling_functions) == 0:
                 hybrid_mpb = deepcopy(mpb)
                 hybrid_mpb["ompl.sampler"] = "hybrid"
                 hybrid_mpb.set_id('{}-{}'.format(cost_fn, 'hybrid'))
@@ -133,10 +130,14 @@ if __name__ == '__main__':
                 mpbs['{}-{}-{}'.format(sgs["name"], cost_fn, 'hybrid')] = hybrid_mpb
                 result_file_names.append("{}/{}-{}_results.json".format(results_folder_prefix, cost_fn, 'hybrid'))
 
+        for mpb in mpbs.values():
+            pool.benchmarks.append(mpb)
 
-        for key in mpbs:
-            print("Running {}".format(key))
-            mpbs[key].run(id=key, runs=int(setup['repeats']), subfolder=os.getcwd() + "/" + results_folder_prefix)
-
+        # for key in mpbs:
+        #     print("Running {}".format(key))
+        #     mpbs[key].run(id=key, runs=int(setup['repeats']), subfolder=os.getcwd() + "/" + results_folder_prefix)
+        ts = time.time()
+        name = results_folder_prefix + "-" + datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d_%H-%M-%S') + ''.join(random.SystemRandom().choice(string.ascii_lowercase + string.digits) for _ in range(10))
+        pool.run_parallel(id=name, runs=int(setup['repeats']), use_subfolder=True, processes=int(args.processes))
 
 
