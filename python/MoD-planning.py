@@ -111,7 +111,7 @@ if __name__ == '__main__':
                 intensity_mpb = deepcopy(mpb)
                 intensity_mpb["ompl.sampler"] = "intensity"
                 intensity_mpb.set_id('{}-{}'.format(cost_fn, 'intensity'))
-                intensity_mpb["mod.sampling_bias"] = 0.1
+                intensity_mpb["mod.sampling_bias"] = 0.05
                 intensity_mpb["ompl.intensity_map_file_name"] = intensity_map_file
                 intensity_mpb["ompl.optimization_objective"] = cost_fn
                 intensity_mpb["mod.mod_file_name"] = cost_fn_map[cost_fn]
