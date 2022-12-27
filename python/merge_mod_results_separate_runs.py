@@ -1,7 +1,10 @@
+from copy import deepcopy
 from mpb import MPB
-
+from tqdm.gui import tqdm_gui
 import argparse
+import json
 import glob
+
 
 parser = argparse.ArgumentParser(
     description="Merge results files from the MPBs by specifying cost function and sampling function")
@@ -12,7 +15,7 @@ parser.add_argument("-f", "--folder", nargs="*", type=str,
 args = parser.parse_args()
 
 cost_fns = args.cost_fn if args.cost_fn else ["cliff", "dtc", "gmmt", "intensity"]
-sampling_fns = args.sampling_fns if args.sampling_fns else ["uniform", "ellipse", "dijkstra", "intensity", "hybrid"]
+sampling_fns = args.sampling_fn if args.sampling_fn else ["uniform", "ellipse", "dijkstra", "intensity", "hybrid"]
 
 if not args.folder:
     parser.print_help()
@@ -21,15 +24,10 @@ if not args.folder:
 
 files = []
 
-for folder in args.folder:
-    for cost_fn in cost_fns:
-        for sampling_fn in sampling_fns:
-            filename = glob.glob("{}/*{}-{}_results.json".format(folder, cost_fn, sampling_fn))[0]
-            files.append(filename)
-            print()
+for folder in tqdm_gui(args.folder, unit=" folders done"):
+    MPB.rename_planner_using_filename(sampfns=sampling_fns, costfns=cost_fns, folder=folder)
 
-print("Running merge with files={}, target_filename=combined.json".format(files))
-MPB.merge(files, target_filename="combined.json".format(folder), make_separate_runs=True)
+MPB.merge_separate_planners(sampfns=sampling_fns, costfns=cost_fns, folders=args.folder, pattern="_renamed.json")
 
 print("DONE!")
 exit(0)

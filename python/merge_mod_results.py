@@ -12,24 +12,8 @@ parser.add_argument("-f", "--folder", nargs="*", type=str,
 args = parser.parse_args()
 
 if not (args.cost_fn and args.sampling_fn and args.folder):
-    parser.print_help()
-    print("All three arguments are needed!")
-    exit(-1)
+        parser.print_help()
+        print("All three arguments are needed!")
+        exit(-1)
 
-for folder in args.folder:
-    files = []
-    planners = []
-    for cost_fn in args.cost_fn:
-        for sampling_fn in args.sampling_fn:
-            files.append(glob.glob("{}/*{}-{}_results.json".format(folder, cost_fn, sampling_fn))[0])
-            planners.append("{}-{}".format(cost_fn, sampling_fn))
-    print("Running merge with files={}, target_filename={}/{}-combined.json, plan_names={}".format(files, folder,
-                                                                                                   folder[folder.rfind(
-                                                                                                       "/"):-1],
-                                                                                                   planners))
-    assert (len(files) == len(planners))
-    MPB.merge(files, target_filename="{}/combined.json".format(folder),
-              plan_names=planners)
-
-print("DONE!")
-exit(0)
+MPB.merge_separate_planners(sampfns=args.sampling_fn, costfns=args.cost_fn, folders=args.folder)

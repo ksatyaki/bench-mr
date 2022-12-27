@@ -1,3 +1,4 @@
+import glob
 import random
 import subprocess
 import datetime
@@ -431,6 +432,55 @@ class MPB:
                             for p in planners], rotation=0, fontsize=14)
             plt.gca().set_xlim([0, len(planners)])
             plt.show()
+
+    @staticmethod
+    def rename_planner_using_filename(sampfns, costfns, folder, from_pattern="_results.json", to_pattern="_renamed.json"):
+        """
+        Renames all planners in all runs for all results files in folder using the file-name.
+        The file names are expected to be in the format: <costfn>-<sampfn>_results.json
+        Both costfns and sampfns are expected to be lists.
+        """
+        for cost_fn in costfns:
+            for sampling_fn in sampfns:
+                filename = glob.glob(("{}/{}-{}" + from_pattern).format(folder, cost_fn, sampling_fn))[0]
+                res = json.load(open(filename))
+                res_to_write = deepcopy(res)
+                name_components = filename.split("_")[-2]
+                name_components = name_components[name_components.rfind("/") + 1:]
+
+                assert (filename == ("{}/{}-{}" + from_pattern).format(folder, cost_fn, sampling_fn))
+                for i, run in enumerate(res["runs"]):
+                    for planner, plan in run["plans"].items():
+                        tqdm.write("Changing {} to {} in {}".format(planner, name_components, filename))
+                        res_to_write["runs"][i]["plans"][name_components] = res["runs"][i]["plans"][planner]
+                        del res_to_write["runs"][i]["plans"][planner]
+                with open(("{}/{}-{}" + to_pattern).format(folder, cost_fn, sampling_fn), "w") as target_file:
+                    json.dump(res_to_write, target_file, indent=2)
+                    tqdm.write("Wrote to {}".format(("{}/{}-{}" + to_pattern).format(folder, cost_fn, sampling_fn)))
+
+    @staticmethod
+    def merge_separate_planners(sampfns, costfns, folders, pattern="_results.json"):
+        """
+        Merge results files from different planners into one.
+        This merge function assumes that the results files are stored as <costfn>-<sampfn>_results.json
+        Both costfns and sampfns are expected to be lists.
+        Multiple folders can be provided to the function.
+        """
+        for folder in folders:
+            files = []
+            planners = []
+            for cost_fn in costfns:
+                for sampling_fn in sampfns:
+                    files.append(glob.glob(("{}/*{}-{}" + pattern).format(folder, cost_fn, sampling_fn))[0])
+                    planners.append("{}-{}".format(cost_fn, sampling_fn))
+            print("Running merge with files={}, target_filename={}/{}-combined.json, plan_names={}".format(
+                files, folder, folder[folder.rfind("/"):-1], planners))
+            assert (len(files) == len(planners))
+            MPB.merge(files, target_filename="{}/combined.json".format(folder),
+                      plan_names=planners)
+
+        print("DONE!")
+        return
 
     @staticmethod
     def merge(mpbs, target_filename: str, make_separate_runs: bool = False, silence: bool = False,
