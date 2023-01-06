@@ -466,7 +466,7 @@ class MPB:
         Both costfns and sampfns are expected to be lists.
         Multiple folders can be provided to the function.
         """
-        for folder in folders:
+        for folder in tqdm(folders, unit=" folders"):
             files = []
             planners = []
             for cost_fn in costfns:
