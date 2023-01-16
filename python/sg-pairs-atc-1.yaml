@@ -1,4 +1,15 @@
+repeats: 10
 sg:
-  - goal: [-3.85, -6.82, -0.8203]
-    start: [21.471, -17.647, 0.733]
-    name: scenario2
+  - start: [47.690, -18.848, -2.356]
+    goal: [-19.575, 12.390, 2.313]
+    name: test-atc-scenario1
+cost_fns:
+  - "gmmt"
+  - "cliff"
+  - "dtc"
+  - "intensity"
+gmmt_map_file: "maps/atc_gmmt.xml"
+cliff_map_file: "maps/atc_cliff.xml"
+intensity_map_file: "maps/atc_intensity1m.xml"
+occmap_file: "maps/atc.yaml"
+max_planning_time: 8
