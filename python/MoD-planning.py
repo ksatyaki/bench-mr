@@ -77,8 +77,8 @@ if __name__ == '__main__':
             if "dijkstra" in sampling_functions or len(sampling_functions) == 0:
                 dijkstra_mpb = deepcopy(mpb)
                 dijkstra_mpb["ompl.sampler"] = "dijkstra"
-                dijkstra_mpb["mod.dijkstra_cell_size"] = 0.5
-                dijkstra_mpb["mod.sampling_bias"] = 0.05
+                dijkstra_mpb["mod.dijkstra_cell_size"] = 1.0
+                dijkstra_mpb["mod.sampling_bias"] = 0.2
                 dijkstra_mpb.set_id('{}-{}'.format(cost_fn, 'dijkstra'))
                 dijkstra_mpb["ompl.intensity_map_file_name"] = intensity_map_file
                 dijkstra_mpb["ompl.optimization_objective"] = cost_fn
@@ -122,8 +122,8 @@ if __name__ == '__main__':
                 hybrid_mpb = deepcopy(mpb)
                 hybrid_mpb["ompl.sampler"] = "hybrid"
                 hybrid_mpb.set_id('{}-{}'.format(cost_fn, 'hybrid'))
-                hybrid_mpb["mod.dijkstra_cell_size"] = 0.5
-                hybrid_mpb["mod.sampling_bias"] = 0.05
+                hybrid_mpb["mod.dijkstra_cell_size"] = 1.0
+                hybrid_mpb["mod.sampling_bias"] = 0.2
                 hybrid_mpb["ompl.intensity_map_file_name"] = intensity_map_file
                 hybrid_mpb["ompl.optimization_objective"] = cost_fn
                 hybrid_mpb["mod.mod_file_name"] = cost_fn_map[cost_fn]
