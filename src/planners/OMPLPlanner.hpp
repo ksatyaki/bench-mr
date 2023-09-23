@@ -21,6 +21,7 @@
 #include <ompl/geometric/planners/fmt/BFMT.h>
 #include <ompl/geometric/planners/fmt/FMT.h>
 #include <ompl/geometric/planners/informedtrees/BITstar.h>
+#include <ompl/geometric/planners/informedtrees/AITstar.h>
 #include <ompl/geometric/planners/kpiece/KPIECE1.h>
 #include <ompl/geometric/planners/pdst/PDST.h>
 #include <ompl/geometric/planners/prm/PRMstar.h>
@@ -142,6 +143,7 @@ typedef OMPLPlanner<og::RRTsharp> RRTsharpPlanner;
 typedef OMPLPlanner<og::InformedRRTstar> InformedRRTstarPlanner;
 typedef OMPLPlanner<og::SORRTstar> SORRTstarPlanner;
 typedef OMPLPlanner<og::BITstar> BITstarPlanner;
+typedef OMPLPlanner<og::AITstar> AITstarPlanner;
 typedef OMPLPlanner<og::FMT> FMTPlanner;
 typedef OMPLPlanner<og::BFMT> BFMTPlanner;
 typedef OMPLPlanner<og::PRM> PRMPlanner;

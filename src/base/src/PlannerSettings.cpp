@@ -344,6 +344,7 @@ void PlannerSettings::GlobalSettings::OmplSettings::retrieveGeometricPlannerPara
   planners.emplace_back(std::make_shared<og::InformedRRTstar>(space_info_ptr));
   planners.emplace_back(std::make_shared<og::SORRTstar>(space_info_ptr));
   planners.emplace_back(std::make_shared<og::BITstar>(space_info_ptr));
+  planners.emplace_back(std::make_shared<og::AITstar>(space_info_ptr));
   planners.emplace_back(std::make_shared<og::FMT>(space_info_ptr));
   planners.emplace_back(std::make_shared<og::BFMT>(space_info_ptr));
   planners.emplace_back(std::make_shared<og::PRM>(space_info_ptr));
