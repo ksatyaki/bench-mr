@@ -35,15 +35,15 @@ if __name__ == '__main__':
     # Basic Setup
     mpb = MPB()
     mpb["ompl.seed"] = -1  # set the seed of the OMPL planners
-    mpb.set_planners(['informed_rrt_star'])
+    mpb.set_planners(['ait_star'])
     mpb.set_steer_functions(['car'])
     mpb["steer.car_turning_radius"] = 1.0
     mpb["steer.sampling_resolution"] = 0.001
     mpb["max_planning_time"] = float(setup["max_planning_time"])
-    mpb["ompl.geometric_planner_settings.RRTstar.delay_collision_checking"] = "0"
-    mpb["ompl.geometric_planner_settings.RRTstar.goal_bias"] = "0.01"
-    mpb["ompl.geometric_planner_settings.InformedRRTstar.delay_collision_checking"] = "0"
-    mpb["ompl.geometric_planner_settings.InformedRRTstar.goal_bias"] = "0.01"
+    # mpb["ompl.geometric_planner_settings.AITstar.delay_collision_checking"] = "0"
+    # mpb["ompl.geometric_planner_settings.AITstar.goal_bias"] = "0.01"
+    #mpb["ompl.geometric_planner_settings.InformedPRMstar.delay_collision_checking"] = "0"
+    #mpb["ompl.geometric_planner_settings.InformedPRMstar.goal_bias"] = "0.01"
 
     mpb["env.collision.robot_shape_source"] = os.path.abspath(os.getcwd() + "/../maps/simple_robot.yaml")
     mpb.set_image_yaml_env(os.path.abspath(os.getcwd() + "/../" + setup["occmap_file"]))
@@ -77,8 +77,8 @@ if __name__ == '__main__':
             if "dijkstra" in sampling_functions or len(sampling_functions) == 0:
                 dijkstra_mpb = deepcopy(mpb)
                 dijkstra_mpb["ompl.sampler"] = "dijkstra"
-                dijkstra_mpb["mod.dijkstra_cell_size"] = 0.5
-                dijkstra_mpb["mod.sampling_bias"] = 0.05
+                dijkstra_mpb["mod.dijkstra_cell_size"] = 1.0
+                dijkstra_mpb["mod.sampling_bias"] = 0.4
                 dijkstra_mpb.set_id('{}-{}'.format(cost_fn, 'dijkstra'))
                 dijkstra_mpb["ompl.intensity_map_file_name"] = intensity_map_file
                 dijkstra_mpb["ompl.optimization_objective"] = cost_fn
@@ -88,7 +88,6 @@ if __name__ == '__main__':
 
             if "uniform" in sampling_functions or len(sampling_functions) == 0:
                 uniform_mpb = deepcopy(mpb)
-                uniform_mpb.set_planners(['rrt_star'])
                 uniform_mpb["ompl.sampler"] = ""
                 uniform_mpb.set_id('{}-{}'.format(cost_fn, 'uniform'))
                 uniform_mpb["ompl.intensity_map_file_name"] = intensity_map_file

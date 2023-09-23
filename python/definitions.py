@@ -104,7 +104,7 @@ smoothers = list(smoother_names.values())
 sampling_planners = ['rrt', 'est', 'sbl', 'prm',
                      'theta_star', 'sst', 'kpiece', 'pdst', 'stride']
 anytime_planners = ['rrt_star', 'rrt_sharp', 'informed_rrt_star', 'sorrt_star', 'prm_star', 'fmt', 'bfmt', 'cforest',
-                    'bit_star', 'spars', 'spars2']
+                    'bit_star', 'ait_star', 'spars', 'spars2']
 controlbased_planners = ['fpkpiece', 'fpest', 'fpsst', 'fprrt', 'fppdst']
 sbpl_planners = ['sbpl_adstar', 'sbpl_anastar',
                  'sbpl_arastar', 'sbpl_lazy_ara', 'sbpl_mha']
@@ -130,6 +130,7 @@ planner_names = {
     'bfmt': 'BFMT',
     'cforest': 'CForest',
     'bit_star': 'BIT*',
+    'ait_star': 'AIT*',
     'spars': 'SPARS',
     'spars2': 'SPARS2',
     'sbpl_adstar': 'SBPL AD*',
@@ -164,6 +165,7 @@ planner_internal_names = {
     'bfmt': 'BFMT',
     'cforest': 'CForest',
     'bit_star': 'kBITstar',
+    'ait_star': 'AITstar',
     'spars': 'SPARS',
     'spars2': 'SPARStwo',
     'sbpl_adstar': 'SBPL_ADstar',

@@ -27,4 +27,4 @@ gmmt_map_file: "maps/atc_gmmt.xml"
 cliff_map_file: "maps/atc_cliff.xml"
 intensity_map_file: "maps/atc_intensity1m.xml"
 occmap_file: "maps/atc.yaml"
-max_planning_time: 64
+max_planning_time: 4
