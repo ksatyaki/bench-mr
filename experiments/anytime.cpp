@@ -14,6 +14,8 @@ void evaluatePlanners(nlohmann::json &info) {
     PathEvaluation::evaluateAnytime<BFMTPlanner>(info);
   if (global::settings.benchmark.planning.bit_star)
     PathEvaluation::evaluateAnytime<BITstarPlanner>(info);
+  if (global::settings.benchmark.planning.ait_star)
+    PathEvaluation::evaluateAnytime<AITstarPlanner>(info);
   if (global::settings.benchmark.planning.cforest)
     PathEvaluation::evaluateAnytime<CForestPlanner>(info);
   if (global::settings.benchmark.planning.est)

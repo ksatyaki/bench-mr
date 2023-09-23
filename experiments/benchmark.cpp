@@ -18,6 +18,8 @@ void evaluatePlanners(nlohmann::json &info) {
     PathEvaluation::evaluateSmoothers<BFMTPlanner>(info);
   if (global::settings.benchmark.planning.bit_star)
     PathEvaluation::evaluateSmoothers<BITstarPlanner>(info);
+  if (global::settings.benchmark.planning.ait_star)
+    PathEvaluation::evaluateSmoothers<AITstarPlanner>(info);
   if (global::settings.benchmark.planning.cforest)
     PathEvaluation::evaluateSmoothers<CForestPlanner>(info);
   if (global::settings.benchmark.planning.est)

@@ -362,6 +362,7 @@ struct GlobalSettings : public Group {
       Property<bool> rrt{true, "rrt", this};
       Property<bool> rrt_star{true, "rrt_star", this};
       Property<bool> bit_star{true, "bit_star", this};
+      Property<bool> ait_star{true, "ait_star", this};
       Property<bool> cforest{true, "cforest", this};
       Property<bool> rrt_sharp{true, "rrt_sharp", this};
       Property<bool> sorrt_star{true, "sorrt_star", this};
