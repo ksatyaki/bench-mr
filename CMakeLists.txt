@@ -49,10 +49,10 @@ find_package(Qt5 COMPONENTS Core Widgets Charts Svg)
 include_directories(${CMAKE_BINARY_DIR})
 set(CMAKE_AUTOMOC ON)
 
-find_package(ompl 1.5 REQUIRED)
+find_package(ompl REQUIRED)
 include_directories(${OMPL_INCLUDE_DIR})
 
-find_package(Boost 1.58 REQUIRED COMPONENTS serialization filesystem system program_options)
+find_package(Boost REQUIRED COMPONENTS serialization filesystem system program_options)
 include_directories(${Boost_INCLUDE_DIR})
 link_directories(${Boost_LIBRARY_DIRS})
 
@@ -157,3 +157,5 @@ target_link_libraries(generate_obstacle_ratio_benchmarks ${EXTRA_LIB})
 add_executable(generate_turning_radii_benchmarks experiments/generate_turning_radii_benchmarks.cpp)
 target_link_libraries(generate_turning_radii_benchmarks ${EXTRA_LIB})
 
+add_executable(generate_samples src/plotting/generate_samples.cpp)
+target_link_libraries(generate_samples ${EXTRA_LIB})
