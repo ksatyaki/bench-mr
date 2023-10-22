@@ -6,9 +6,9 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 set(CMAKE_CXX_STANDARD 17)
 
-if(NOT CMAKE_BUILD_TYPE)
+if (NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE Release)
-endif()
+endif ()
 
 set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -DNDEBUG")
 
@@ -157,5 +157,5 @@ target_link_libraries(generate_obstacle_ratio_benchmarks ${EXTRA_LIB})
 add_executable(generate_turning_radii_benchmarks experiments/generate_turning_radii_benchmarks.cpp)
 target_link_libraries(generate_turning_radii_benchmarks ${EXTRA_LIB})
 
-add_executable(generate_samples src/plotting/generate_samples.cpp)
-target_link_libraries(generate_samples ${EXTRA_LIB})
+#add_executable(generate_samples src/plotting/generate_samples.cpp)
+#target_link_libraries(generate_samples ${EXTRA_LIB})

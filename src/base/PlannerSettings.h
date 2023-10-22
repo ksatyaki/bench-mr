@@ -13,14 +13,7 @@
 using namespace params;
 
 namespace sbpl {
-enum Planner {
-  SBPL_ARASTAR,
-  SBPL_ADSTAR,
-  SBPL_RSTAR,
-  SBPL_ANASTAR,
-  SBPL_MHA,
-  SBPL_LAZY_ARA
-};
+enum Planner { SBPL_ARASTAR, SBPL_ADSTAR, SBPL_RSTAR, SBPL_ANASTAR, SBPL_MHA, SBPL_LAZY_ARA };
 }
 
 namespace robot {
@@ -157,8 +150,7 @@ struct GlobalSettings : public Group {
         /**
          * Path of image file to convert to grid map.
          */
-        Property<std::string> source{"image_mazes/intel-lab.png", "source",
-                                     this};
+        Property<std::string> source{"image_mazes/intel-lab.png", "source", this};
 
         /**
          * Threshold to set a pixel to occupied based of greyscale value in
@@ -193,8 +185,7 @@ struct GlobalSettings : public Group {
       /**
        * Generator for grid environments ("corridor", "random", "moving_ai").
        */
-      Property<std::string> source{"polygon_mazes/parking1.svg", "source",
-                                   this};
+      Property<std::string> source{"polygon_mazes/parking1.svg", "source", this};
 
       /**
        * Scale polygons from InkScape.
@@ -211,15 +202,13 @@ struct GlobalSettings : public Group {
       /**
        * Which model is used for collision checking.
        */
-      Property<robot::Model> collision_model{robot::ROBOT_POLYGON,
-                                             "collision_model", this};
+      Property<robot::Model> collision_model{robot::ROBOT_POLYGON, "collision_model", this};
 
       Property<Polygon> robot_shape{Polygon(), "robot_shape", this};
       /**
        * SVG file name of robot shape.
        */
-      Property<std::string> robot_shape_source{"polygon_mazes/car.svg",
-                                               "robot_shape_source", this};
+      Property<std::string> robot_shape_source{"polygon_mazes/car.svg", "robot_shape_source", this};
 
       void initializeCollisionModel();
     } collision{"collision", this};
@@ -230,10 +219,9 @@ struct GlobalSettings : public Group {
    */
   Property<bool> log_env_distances{false, "log_env_distances", this};
 
-  Property<bool> auto_choose_distance_computation_method{
-      true, "auto_choose_distance_computation_method", this};
-  Property<distance_computation::Method> distance_computation_method{
-      distance_computation::BRUTE_FORCE, "distance_computation_method", this};
+  Property<bool> auto_choose_distance_computation_method{true, "auto_choose_distance_computation_method", this};
+  Property<distance_computation::Method> distance_computation_method{distance_computation::BRUTE_FORCE,
+                                                                     "distance_computation_method", this};
 
   Property<double> max_planning_time{15, "max_planning_time", this};
 
@@ -242,8 +230,7 @@ struct GlobalSettings : public Group {
    * algorithm is used to compute the obstacle distance field (necessary for
    * clearance evaluations and GRIPS).
    */
-  Property<unsigned int> fast_odf_threshold{100 * 100, "fast_odf_threshold",
-                                            this};
+  Property<unsigned int> fast_odf_threshold{100 * 100, "fast_odf_threshold", this};
 
   /**
    * Whether to estimate the orientation of the start and goal states for
@@ -275,8 +262,7 @@ struct GlobalSettings : public Group {
    * Threshold in radians of the difference between consecutive yaw angles to be
    * considered a cusp.
    */
-  Property<double> cusp_angle_threshold{60 * M_PI / 180.,
-                                        "cusp_angle_threshold", this};
+  Property<double> cusp_angle_threshold{60 * M_PI / 180., "cusp_angle_threshold", this};
 
   /**
    * Settings related to benchmarking.
@@ -291,28 +277,23 @@ struct GlobalSettings : public Group {
      * If a list of steer functions is given, they will each be tested on every
      * run.
      */
-    Property<std::vector<Steering::SteeringType>> steer_functions{
-        {//           Steering::STEER_TYPE_REEDS_SHEPP,
-         //           Steering::STEER_TYPE_DUBINS,
-         // TODO reactivate other steer functions
-         //           Steering::STEER_TYPE_POSQ,
-         //           Steering::STEER_TYPE_HC_REEDS_SHEPP,
-         Steering::STEER_TYPE_CC_REEDS_SHEPP},
-        "steer_functions",
-        this};
+    Property<std::vector<Steering::SteeringType>> steer_functions{{//           Steering::STEER_TYPE_REEDS_SHEPP,
+                                                                   //           Steering::STEER_TYPE_DUBINS,
+                                                                   // TODO reactivate other steer functions
+                                                                   //           Steering::STEER_TYPE_POSQ,
+                                                                   //           Steering::STEER_TYPE_HC_REEDS_SHEPP,
+                                                                   Steering::STEER_TYPE_CC_REEDS_SHEPP},
+                                                                  "steer_functions",
+                                                                  this};
 
     Property<bool> control_planners_on{false, "control_planners_on", this};
-    Property<std::vector<ForwardPropagation::ForwardPropagationType>>
-        forward_propagations{
-            {ForwardPropagation::FORWARD_PROPAGATION_TYPE_KINEMATIC_CAR},
-            "forward_propagations",
-            this};
+    Property<std::vector<ForwardPropagation::ForwardPropagationType>> forward_propagations{
+        {ForwardPropagation::FORWARD_PROPAGATION_TYPE_KINEMATIC_CAR}, "forward_propagations", this};
 
     /**
      * Time intervals used for the anytime planner benchmark.
      */
-    Property<std::vector<double>> anytime_intervals{
-        {1., 3., 5., 10., 15., 20., 25., 30.}, "anytime_intervals", this};
+    Property<std::vector<double>> anytime_intervals{{1., 3., 5., 10., 15., 20., 25., 30.}, "anytime_intervals", this};
 
     struct MovingAiSettings : public Group {
       using Group::Group;
@@ -416,8 +397,7 @@ struct GlobalSettings : public Group {
 
     Property<double> goal_bias{0.05, "goal_bias", this};
 
-    Property<double> state_equality_tolerance{1e-4, "state_equality_tolerance",
-                                              this};
+    Property<double> state_equality_tolerance{1e-4, "state_equality_tolerance", this};
     Property<double> cost_threshold{100, "cost_threshold", this};
 
     Property<unsigned int> seed{1, "seed", this};
@@ -429,8 +409,7 @@ struct GlobalSettings : public Group {
      */
     Property<std::string> sampler{"iid", "sampler", this};
 
-    Property<std::string> intensity_map_file_name{
-        "none", "intensity_map_file_name", this};
+    Property<std::string> intensity_map_file_name{"none", "intensity_map_file_name", this};
 
     /**
      * The optimization objective used by OMPL.
@@ -438,8 +417,7 @@ struct GlobalSettings : public Group {
      * Currently supported: "min_pathlength", "max_minclearance",
      * "max_smoothness", "min_curvature"
      */
-    Property<std::string> optimization_objective{
-        "min_pathlength", "optimization_objective", this};
+    Property<std::string> optimization_objective{"min_pathlength", "optimization_objective", this};
 
     /**
      * Retrieve available parameters and defaults for geometric planners.
@@ -455,8 +433,7 @@ struct GlobalSettings : public Group {
      * Keys are planners names, values are key:value pairs of planner
      * parameters.
      */
-    Property<nlohmann::json> geometric_planner_settings{
-        {}, "geometric_planner_settings", this};
+    Property<nlohmann::json> geometric_planner_settings{{}, "geometric_planner_settings", this};
 
     /**
      * Retrieve available parameters and defaults for control planners.
@@ -472,8 +449,7 @@ struct GlobalSettings : public Group {
      * Keys are planners names, values are key:value pairs of planner
      * parameters. Populated with default params in constructor.
      */
-    Property<nlohmann::json> control_planner_settings{
-        {}, "control_planner_settings", this};
+    Property<nlohmann::json> control_planner_settings{{}, "control_planner_settings", this};
 
     /**
      * Sets the OMPL sampler based on the state space (steering function) and
@@ -492,8 +468,9 @@ struct GlobalSettings : public Group {
     Property<double> mahalanobis_distance_threshold{10.0, "mdt", this};
     Property<double> max_vs{1.0, "max_vs", this};
 
-    Property<double> dijkstra_cell_size {0.20, "dijkstra_cell_size", this};
-    Property<double> sampling_bias {0.1, "sampling_bias", this};
+    Property<double> dijkstra_cell_size{0.20, "dijkstra_cell_size", this};
+    Property<double> sampling_bias{0.1, "sampling_bias", this};
+    Property<bool> uniform_valid{false, "uniform_valid", this};
 
     Property<std::string> mod_file_name{"", "mod_file_name", this};
   } mod{"mod", this};
@@ -507,8 +484,7 @@ struct GlobalSettings : public Group {
      */
     void initializeSteering() const;
 
-    Property<Steering::SteeringType> steering_type{
-        Steering::STEER_TYPE_REEDS_SHEPP, "steering_type", this};
+    Property<Steering::SteeringType> steering_type{Steering::STEER_TYPE_REEDS_SHEPP, "steering_type", this};
     Property<double> car_turning_radius{4, "car_turning_radius", this};
 
     /**
@@ -558,10 +534,8 @@ struct GlobalSettings : public Group {
      */
     void initializeForwardPropagation() const;
 
-    Property<ForwardPropagation::ForwardPropagationType>
-        forward_propagation_type{
-            ForwardPropagation::FORWARD_PROPAGATION_TYPE_KINEMATIC_CAR,
-            "forward_propagation_type", this};
+    Property<ForwardPropagation::ForwardPropagationType> forward_propagation_type{
+        ForwardPropagation::FORWARD_PROPAGATION_TYPE_KINEMATIC_CAR, "forward_propagation_type", this};
 
     Property<double> car_turning_radius{4, "car_turning_radius", this};
 
@@ -589,21 +563,18 @@ struct GlobalSettings : public Group {
     /**
      * Search until it finds a solution (even if allotted time is over)?
      */
-    Property<bool> search_until_first_solution{
-        false, "search_until_first_solution", this};
+    Property<bool> search_until_first_solution{false, "search_until_first_solution", this};
     /**
      * TODO verify description
      * How much deviation from optimal solution is acceptable (>1)? Ignored by
      * planners that don't have notion of epsilon, 1 means optimal search.
      */
     Property<double> initial_solution_eps{3, "initial_solution_eps", this};
-    Property<double> forward_velocity{0.2, "forward_velocity",
-                                      this};  // in meters/sec
-    Property<double> time_to_turn_45_degs_in_place{
-        0.6, "time_to_turn_45_degs_in_place", this};  // in sec
+    Property<double> forward_velocity{0.2, "forward_velocity", this};                            // in meters/sec
+    Property<double> time_to_turn_45_degs_in_place{0.6, "time_to_turn_45_degs_in_place", this};  // in sec
 
-    Property<std::string> motion_primitive_filename{
-        "./sbpl_mprim/unicycle_0.25.mprim", "motion_primitive_filename", this};
+    Property<std::string> motion_primitive_filename{"./sbpl_mprim/unicycle_0.25.mprim", "motion_primitive_filename",
+                                                    this};
     /**
      * XXX Important: number of theta directions must match resolution in motion
      * primitive definition file.
@@ -627,8 +598,7 @@ struct GlobalSettings : public Group {
      */
     Property<double> goal_tolerance_x{1, "goal_tolerance_x", this};
     Property<double> goal_tolerance_y{1, "goal_tolerance_y", this};
-    Property<double> goal_tolerance_theta{2 * M_PI, "goal_tolerance_theta",
-                                          this};
+    Property<double> goal_tolerance_theta{2 * M_PI, "goal_tolerance_theta", this};
   } sbpl{"sbpl", this};
 
   struct SmoothingSettings : public Group {
@@ -653,14 +623,12 @@ struct GlobalSettings : public Group {
       /**
        * Number of gradient descent rounds.
        */
-      Property<unsigned int> gradient_descent_rounds{
-          5, "gradient_descent_rounds", this};
+      Property<unsigned int> gradient_descent_rounds{5, "gradient_descent_rounds", this};
       /**
        * Maximum number of pruning rounds after which the algorithm
        * should terminate.
        */
-      Property<unsigned int> max_pruning_rounds{100, "max_pruning_rounds",
-                                                this};
+      Property<unsigned int> max_pruning_rounds{100, "max_pruning_rounds", this};
     } grips{"grips", this};
 
     struct OmplSettings : public Group {
@@ -670,11 +638,9 @@ struct GlobalSettings : public Group {
       Property<double> bspline_epsilon{0.005, "bspline_epsilon", this};
 
       Property<unsigned int> shortcut_max_steps{0, "shortcut_max_steps", this};
-      Property<unsigned int> shortcut_max_empty_steps{
-          0, "shortcut_max_empty_steps", this};
+      Property<unsigned int> shortcut_max_empty_steps{0, "shortcut_max_empty_steps", this};
       Property<double> shortcut_range_ratio{0.33, "shortcut_range_ratio", this};
-      Property<double> shortcut_snap_to_vertex{0.005, "shortcut_snap_to_vertex",
-                                               this};
+      Property<double> shortcut_snap_to_vertex{0.005, "shortcut_snap_to_vertex", this};
     } ompl{"ompl", this};
 
     struct ChompSettings : public Group {
@@ -692,8 +658,7 @@ struct GlobalSettings : public Group {
        * Here, the number for global and local iterations is the same.
        */
       Property<unsigned int> max_iterations{1500u, "max_iterations", this};
-      Property<chomp::ChompObjectiveType> objective_type{
-          chomp::MINIMIZE_VELOCITY, "objective_type", this};
+      Property<chomp::ChompObjectiveType> objective_type{chomp::MINIMIZE_VELOCITY, "objective_type", this};
     } chomp{"chomp", this};
 
   } smoothing{"smoothing", this};
@@ -711,7 +676,9 @@ struct GlobalSettings : public Group {
 
   void load(const nlohmann::json &j) {
     Group::load(j);
-    if(ompl.seed != -1) { ompl::RNG::setSeed(ompl.seed); }
+    if (ompl.seed != -1) {
+      ompl::RNG::setSeed(ompl.seed);
+    }
   }
 };
 }  // namespace PlannerSettings

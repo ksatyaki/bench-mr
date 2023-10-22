@@ -44,7 +44,8 @@ int main(int argn, char* args[]) {
   }
 
   // Open file to write even if it doesn't exist.
-  FILE* file = fopen(vm["file"].as<std::string>().c_str(), "w");
+  FILE* file = fopen((vm["file"].as<std::string>() + std::string("-all.txt")).c_str(), "w");
+  FILE* filevalid = fopen((vm["file"].as<std::string>() + std::string("-valid.txt")).c_str(), "w");
 
   auto objective = vm["objective"].as<std::string>();
   auto cliffmap_filename = vm["cliffmap"].as<std::string>();
@@ -117,9 +118,29 @@ int main(int argn, char* args[]) {
             state->as<ob::CarStateSpace::StateType>()->getY(), state->as<ob::CarStateSpace::StateType>()->getYaw(),
             sampler_type.c_str(), sampling_bias, dijkstra_cell_size, objective.c_str());
 
+    // free the state
     si->freeState(state);
   }
 
+  // a vector to collect valid samples
+  std::vector<ob::State*> valid_states;
+
+  // sample a several states until 1000 are valid
+  for (int valid = 0; valid < 1000;) {
+    ob::State* state = si->allocState();
+    sampler->sampleUniform(state, ompl::base::Cost(std::numeric_limits<double>::max()));
+    if (si->isValid(state)) {
+      fprintf(filevalid, "%f,%f,%f,%s-%0.2f-%0.1f,%s\n", state->as<ob::CarStateSpace::StateType>()->getX(),
+              state->as<ob::CarStateSpace::StateType>()->getY(), state->as<ob::CarStateSpace::StateType>()->getYaw(),
+              sampler_type.c_str(), sampling_bias, dijkstra_cell_size, objective.c_str());
+      valid_states.push_back(state);
+      valid++;
+    }
+  }
+
+  for (auto& state : valid_states) {
+    si->freeState(state);
+  }
   // close the file
   fclose(file);
 

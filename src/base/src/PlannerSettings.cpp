@@ -237,21 +237,23 @@ void PlannerSettings::GlobalSettings::SteerSettings::initializeSteering() const 
     global::settings.ompl.objective = std::make_shared<ompl::MoD::UpstreamCriterionOptimizationObjective>(
         global::settings.ompl.space_info, ::MoD::CLiFFMap(global::settings.mod.mod_file_name.value()),
         global::settings.ompl.intensity_map_file_name, 1.0, 1.0, global::settings.mod.weight_cliff.value(),
-        global::settings.ompl.sampler.value(), global::settings.mod.sampling_bias.value(), true);
+        global::settings.ompl.sampler.value(), global::settings.mod.sampling_bias.value(),
+        global::settings.mod.uniform_valid.value(), true);
     std::dynamic_pointer_cast<ompl::MoD::MoDOptimizationObjective>(global::settings.ompl.objective)
         ->setDijkstraCellSize(global::settings.mod.dijkstra_cell_size);
   } else if (opt_obj_str == "gmmt") {
     global::settings.ompl.objective = std::make_shared<ompl::MoD::UpstreamCriterionOptimizationObjective>(
         global::settings.ompl.space_info, ompl::MoD::MapType::GMMTMap, global::settings.mod.mod_file_name.value(), 1.0,
         1.0, global::settings.mod.weight_gmmt.value(), global::settings.ompl.sampler.value(),
-        global::settings.ompl.intensity_map_file_name.value(), global::settings.mod.sampling_bias.value(), true);
+        global::settings.ompl.intensity_map_file_name.value(), global::settings.mod.sampling_bias.value(),
+        global::settings.mod.uniform_valid.value(), true);
     std::dynamic_pointer_cast<ompl::MoD::MoDOptimizationObjective>(global::settings.ompl.objective)
         ->setDijkstraCellSize(global::settings.mod.dijkstra_cell_size);
   } else if (opt_obj_str == "intensity") {
     global::settings.ompl.objective = std::make_shared<ompl::MoD::IntensityMapOptimizationObjective>(
         global::settings.ompl.space_info, global::settings.mod.mod_file_name.value(), 1.0, 1.0,
         global::settings.mod.weight_intensity.value(), global::settings.ompl.sampler.value(),
-        global::settings.mod.sampling_bias.value(), true);
+        global::settings.mod.sampling_bias.value(), global::settings.mod.uniform_valid.value(), true);
     std::dynamic_pointer_cast<ompl::MoD::MoDOptimizationObjective>(global::settings.ompl.objective)
         ->setDijkstraCellSize(global::settings.mod.dijkstra_cell_size);
   } else if (opt_obj_str == "dtc") {
