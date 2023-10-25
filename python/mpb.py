@@ -291,7 +291,6 @@ class MPB:
 
             if ip == 0:
                 results_filename = self.results_filename
-                print("Saving results to %s." % results_filename)
             else:
                 results_filename = os.path.join(
                     subfolder, self.id + "_results_%s.json" % planner)
@@ -598,8 +597,6 @@ class MultipleMPB:
         if memory_limit != 0:
             resource.setrlimit(resource.RLIMIT_AS, memory_limit)
         mpb = MPB(config_file=config_filename)
-        print(
-            f"MPB {mpb_id} ({index}) running with config file {config_filename}\n and ID {mpb_id}\n and subfolder {subfolder}")
         code = mpb.run(id=mpb_id,
                        runs=runs,
                        subfolder=subfolder,
