@@ -195,7 +195,11 @@ struct PathEvaluation {
                  planner.name().c_str(), ex.what());
       createEmptyEntry(planner.name(), info);
       return false;
-    } catch (...) {
+    } catch (std::exception &ex) {
+      OMPL_ERROR("GENERIC ERROR: %s.", ex.what());
+      return false;
+    }
+    catch (...) {
       OMPL_ERROR(
           "<stats> Error </stats>\nAn unknown exception occurred while running "
           "planner %s.",
