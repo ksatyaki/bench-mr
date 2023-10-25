@@ -48,6 +48,7 @@ class MPB:
         # self.set_steer_functions(['reeds_shepp'])
         self.config_filename = config_file  # type: Optional[str]
         self.results_filename = None  # type: Optional[str]
+        self.log_filename = None  # type: Optional[str]
 
     def __getitem__(self, item: str) -> Union[str, int, float, dict]:
         c = self.config
@@ -77,7 +78,7 @@ class MPB:
         self._planners = [planner for planner, used in self["benchmark.planning"].items(
         ) if used]  # type: [str]
         self._smoothers = [smoother for smoother,
-                                        used in self["benchmark.smoothing"].items() if used]  # type: [str]
+        used in self["benchmark.smoothing"].items() if used]  # type: [str]
         self._steer_functions = [steer_functions[index]
                                  for index in self["benchmark.steer_functions"]]  # type: [str]
         self._robot_models = [robot_models[index]
@@ -256,11 +257,11 @@ class MPB:
                 ts).strftime('%Y-%m-%d_%H-%M-%S')
         self.set_id(id)
         self.set_subfolder(subfolder)
-        log_filename = os.path.join(subfolder, self.id + ".log")
-        logfile = open(log_filename, 'w+')
+        self.log_filename = os.path.join(subfolder, self.id + ".log")
+        logfile = open(self.log_filename, 'w+')
         if not silence:
             print("Running MPB with ID %s (log file at %s)..." %
-                  (self.id, log_filename))
+                  (self.id, self.log_filename))
         num_planners = len(self._planners)
         total_iterations = num_planners * len(self._steer_functions) * runs
         if show_progress_bar:
@@ -272,6 +273,7 @@ class MPB:
             # shuffle planners to avoid multiple parallel MPBs run the same heavy-load planners
             # (e.g. CForest takes all available threads, SBPL leaks memory) at the same time
             random.shuffle(self._planners)
+
         for ip, planner in enumerate(self._planners):
             run = 0
 
@@ -289,6 +291,7 @@ class MPB:
 
             if ip == 0:
                 results_filename = self.results_filename
+                print("Saving results to %s." % results_filename)
             else:
                 results_filename = os.path.join(
                     subfolder, self.id + "_results_%s.json" % planner)
@@ -434,7 +437,8 @@ class MPB:
             plt.show()
 
     @staticmethod
-    def rename_planner_using_filename(sampfns, costfns, folder, from_pattern="_results.json", to_pattern="_renamed.json"):
+    def rename_planner_using_filename(sampfns, costfns, folder, from_pattern="_results.json",
+                                      to_pattern="_renamed.json"):
         """
         Renames all planners in all runs for all results files in folder using the file-name.
         The file names are expected to be in the format: <costfn>-<sampfn>_results.json
@@ -594,6 +598,8 @@ class MultipleMPB:
         if memory_limit != 0:
             resource.setrlimit(resource.RLIMIT_AS, memory_limit)
         mpb = MPB(config_file=config_filename)
+        print(
+            f"MPB {mpb_id} ({index}) running with config file {config_filename}\n and ID {mpb_id}\n and subfolder {subfolder}")
         code = mpb.run(id=mpb_id,
                        runs=runs,
                        subfolder=subfolder,

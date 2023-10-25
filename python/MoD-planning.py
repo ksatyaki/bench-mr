@@ -3,6 +3,7 @@ import time
 import yaml
 from mpb import MPB, MultipleMPB
 import matplotlib as mpl
+
 mpl.rcParams['mathtext.fontset'] = 'cm'
 mpl.rcParams['pdf.fonttype'] = 42
 from copy import deepcopy
@@ -12,12 +13,12 @@ import os
 import random
 import string
 
-
 if __name__ == '__main__':
     parser = ArgumentParser()
     parser.add_argument("setup_yaml_file", help="Yaml file for the ", metavar="DATAFILE")
     parser.add_argument("processes", help="Number of parallel processes to run", metavar="PROCESSES")
-    parser.add_argument("-s", "--sampling-fns", nargs="*", type=str, help="A list of sampling functions (space separated).")
+    parser.add_argument("-s", "--sampling-fns", nargs="*", type=str,
+                        help="A list of sampling functions (space separated).")
     args = parser.parse_args()
 
     sampling_functions = args.sampling_fns if args.sampling_fns else []
@@ -35,7 +36,7 @@ if __name__ == '__main__':
     # Basic Setup
     mpb = MPB()
     mpb["ompl.seed"] = -1  # set the seed of the OMPL planners
-    mpb.set_planners(['informed_rrtstar'])
+    mpb.set_planners(['informed_rrt_star'])
     mpb.set_steer_functions(['car'])
     mpb["steer.car_turning_radius"] = 1.0
     mpb["steer.sampling_resolution"] = 0.001
@@ -68,8 +69,8 @@ if __name__ == '__main__':
         mpbs = dict()
         result_file_names = []
 
-        mpb.set_start(sgs["start"][0],sgs["start"][1],sgs["start"][2])
-        mpb.set_goal(sgs["goal"][0],sgs["goal"][1],sgs["goal"][2])
+        mpb.set_start(sgs["start"][0], sgs["start"][1], sgs["start"][2])
+        mpb.set_goal(sgs["goal"][0], sgs["goal"][1], sgs["goal"][2])
         results_folder_prefix = sgs["name"]
 
         for cost_fn in cost_fns:
@@ -122,8 +123,6 @@ if __name__ == '__main__':
                 mpbs['{}-{}-{}'.format(sgs["name"], cost_fn, 'dijkstra3')] = dijkstra_mpb
                 result_file_names.append("{}/{}-{}_results.json".format(results_folder_prefix, cost_fn, 'dijkstra3'))
 
-    
-
             if "uniform" in sampling_functions or len(sampling_functions) == 0:
                 uniform_mpb = deepcopy(mpb)
                 uniform_mpb["ompl.sampler"] = ""
@@ -154,7 +153,7 @@ if __name__ == '__main__':
                 intensity_mpb["mod.mod_file_name"] = cost_fn_map[cost_fn]
                 mpbs['{}-{}-{}'.format(sgs["name"], cost_fn, 'intensity')] = intensity_mpb
                 result_file_names.append("{}/{}-{}_results.json".format(results_folder_prefix, cost_fn, 'intensity'))
-            
+
             if "hybrid1" in sampling_functions or len(sampling_functions) == 0:
                 hybrid_mpb = deepcopy(mpb)
                 hybrid_mpb["ompl.sampler"] = "hybrid"
@@ -189,7 +188,7 @@ if __name__ == '__main__':
                 hybrid_mpb["ompl.optimization_objective"] = cost_fn
                 hybrid_mpb["mod.mod_file_name"] = cost_fn_map[cost_fn]
                 mpbs['{}-{}-{}'.format(sgs["name"], cost_fn, 'hybrid')] = hybrid_mpb
-                result_file_names.append("{}/{}-{}_results.json".format(results_folder_prefix, cost_fn, 'hybrid'))    
+                result_file_names.append("{}/{}-{}_results.json".format(results_folder_prefix, cost_fn, 'hybrid'))
 
         for mpb in mpbs.values():
             pool.benchmarks.append(mpb)
@@ -198,7 +197,8 @@ if __name__ == '__main__':
         #     print("Running {}".format(key))
         #     mpbs[key].run(id=key, runs=int(setup['repeats']), subfolder=os.getcwd() + "/" + results_folder_prefix)
         ts = time.time()
-        name = results_folder_prefix + "-" + datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d_%H-%M-%S') + ''.join(random.SystemRandom().choice(string.ascii_lowercase + string.digits) for _ in range(10))
-        pool.run_parallel(id=name, runs=int(setup['repeats']), use_subfolder=True, processes=int(args.processes))
-
-
+        name = results_folder_prefix + "-" + datetime.datetime.fromtimestamp(ts).strftime(
+            '%Y-%m-%d_%H-%M-%S') + ''.join(
+            random.SystemRandom().choice(string.ascii_lowercase + string.digits) for _ in range(10))
+        pool.run_parallel(id=name, runs=int(setup['repeats']), use_subfolder=True, processes=int(args.processes),
+                          silence=True)
